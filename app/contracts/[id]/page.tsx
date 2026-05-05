@@ -5,14 +5,11 @@ import { Button } from "@/components/ui/button";
 import { mockContracts } from "@/lib/data";
 import { Share2 } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 export default function ContractDetailPage() {
   const params = useParams<{ id: string }>();
   const contract = mockContracts.find((c) => c.id === params.id);
-  const [downloaded, setDownloaded] = useState(false);
-  const [sent, setSent] = useState(false);
 
   return (
     <Main

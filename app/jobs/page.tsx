@@ -9,11 +9,11 @@ import {
   ItemDescription,
   ItemTitle,
 } from "@/components/ui/item";
-import { Job, mockJobs } from "@/lib/data";
+import { mockJobs } from "@/lib/data";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-export default function JobsPage() {
+function JobsContent() {
   const searchParams = useSearchParams();
   const initialFilter =
     (searchParams.get("filter") as
@@ -42,13 +42,6 @@ export default function JobsPage() {
         (job) => job.status === "in-progress" || job.status === "pending",
       );
     return mockJobs.filter((job) => job.status === jobFilter);
-  };
-
-  const statusColors: Record<Job["status"], string> = {
-    completed: "bg-green-100 text-success",
-    "in-progress": "bg-blue-100 text-primary",
-    cancelled: "bg-red-100 text-danger",
-    pending: "bg-yellow-100 text-warning",
   };
 
   return (
@@ -80,5 +73,13 @@ export default function JobsPage() {
         ))}
       </div>
     </Main>
+  );
+}
+
+export default function JobsPage() {
+  return (
+    <Suspense>
+      <JobsContent />
+    </Suspense>
   );
 }

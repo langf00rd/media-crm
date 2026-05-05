@@ -36,7 +36,7 @@ export default function Main(props: {
               </div>
             )}
             {!props.showBackButton && (
-              <div className="flex gap-10">
+              <div className="flex gap-10 overflow-x-auto scrollbar-hide md:overflow-x-visible">
                 {navItems.map((a) => (
                   <Link
                     key={a.href}

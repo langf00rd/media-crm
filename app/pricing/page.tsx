@@ -27,7 +27,6 @@ import { useState } from "react";
 export default function PricingPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [deleted, setDeleted] = useState(false);
 
   const handleCopyLink = async (pkgId: string) => {
     const url = `${process.env.NEXT_PUBLIC_APP_URL || "app.com"}/book/${pkgId}`;

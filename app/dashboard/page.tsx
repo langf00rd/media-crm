@@ -6,10 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { mockContracts, mockJobs, mockProvider } from "@/lib/data";
 import { CopyIcon } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 
 export default function DashboardPage() {
-  const [copied, setCopied] = useState(false);
   const activeJobs = mockJobs.filter(
     (j) => j.status === "in-progress" || j.status === "pending",
   );

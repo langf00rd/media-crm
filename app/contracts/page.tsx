@@ -7,13 +7,6 @@ import { mockContracts } from "@/lib/data";
 import Link from "next/link";
 
 export default function ContractsPage() {
-  const statusColors: Record<Contract["status"], string> = {
-    draft: "bg-gray-100 text-gray-600",
-    "pending-signature": "bg-yellow-100 text-warning",
-    signed: "bg-green-100 text-success",
-    cancelled: "bg-red-100 text-danger",
-  };
-
   return (
     <Main title="Contracts">
       <div className="mb-4 flex items-center gap-1 space-y-2">
@@ -27,7 +20,7 @@ export default function ContractsPage() {
         </small>*/}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {mockContracts.map((a) => (
-          <Link href={`/contracts/${a.id}`}>
+          <Link key={a.id} href={`/contracts/${a.id}`}>
             <ContractItem contract={a} />
           </Link>
         ))}
