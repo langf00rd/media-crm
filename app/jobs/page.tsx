@@ -10,7 +10,6 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Job, mockJobs } from "@/lib/data";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -53,14 +52,14 @@ export default function JobsPage() {
   };
 
   return (
-    <Main title="Jobs">
-      <div className="flex gap-4">
+    <Main title="All jobs">
+      <div className="flex gap-2">
         {(["all", "active", "completed", "cancelled"] as const).map(
           (filter) => (
             <Button
               key={filter}
               onClick={() => setJobFilter(filter)}
-              className={`${jobFilter === filter ? "bg-primary text-white" : "bg-neutral-100 text-foreground hover:bg-neutral-200"}`}
+              className={`border ${jobFilter === filter ? "bg-primary text-white" : "bg-white border-neutral-200/80 text-foreground"}`}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </Button>
@@ -69,7 +68,7 @@ export default function JobsPage() {
       </div>
       <div className="space-y-4 mt-8">
         {getFilteredJobs().map((a, i) => (
-          <Item key={i} className="border bg-neutral-50">
+          <Item key={i} className="shadow-xs bg-white">
             <ItemContent>
               <ItemTitle>{a.clientName}</ItemTitle>
               <ItemDescription>{a.serviceType}</ItemDescription>
@@ -78,59 +77,6 @@ export default function JobsPage() {
               <Button variant="outline">Mark as completed</Button>
             </ItemActions>
           </Item>
-        ))}
-      </div>
-    </Main>
-  );
-
-  return (
-    <Main title="Jobs">
-      <h1 className="text-3xl font-bold text-foreground">All Jobs</h1>
-
-      <div className="flex gap-2 overflow-x-auto pb-2">
-        {(["all", "active", "completed", "cancelled"] as const).map(
-          (filter) => (
-            <button
-              key={filter}
-              onClick={() => setJobFilter(filter)}
-              className={`px-4 py-2 rounded-pill font-medium whitespace-nowrap transition-all ${
-                jobFilter === filter
-                  ? "bg-primary text-white"
-                  : "bg-gray-100 text-foreground hover:bg-gray-200"
-              }`}
-            >
-              {filter.charAt(0).toUpperCase() + filter.slice(1)}
-            </button>
-          ),
-        )}
-      </div>
-
-      <div className="space-y-3">
-        {getFilteredJobs().map((job) => (
-          <Link
-            key={job.id}
-            href={`/jobs/${job.id}`}
-            className="bg-card-bg backdrop-blur-lg rounded-card shadow-card p-6 cursor-pointer hover:shadow-card-lg transition-all block"
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h3 className="font-semibold text-foreground text-lg">
-                  {job.clientName}
-                </h3>
-                <p className="text-text-secondary text-sm">{job.serviceType}</p>
-                <p className="text-text-secondary text-sm mt-2">
-                  {job.eventDate}
-                </p>
-              </div>
-              <div className="text-right">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[job.status]}`}
-                >
-                  {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
-                </span>
-              </div>
-            </div>
-          </Link>
         ))}
       </div>
     </Main>

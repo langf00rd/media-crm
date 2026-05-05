@@ -81,7 +81,7 @@ function StatCard(props: {
           <CardTitle>{props.label}</CardTitle>
         </CardHeader>
         <CardContent>
-          <h1 className="text-2xl font-bold font-mono">{props.value}</h1>
+          <h1 className="text-3xl font-medium font-mono">{props.value}</h1>
         </CardContent>
       </Card>
     </Link>
