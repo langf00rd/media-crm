@@ -57,7 +57,7 @@ function PackageSelection() {
       {packages.map((pkg) => (
         <Card
           key={pkg.id}
-          className="cursor-pointer hover:ring-2 hover:ring-primary transition-shadow"
+          className="cursor-pointer hover:ring-2 hover:ring-primary bg-background transition-shadow"
           onClick={() => selectPackage(pkg)}
         >
           <CardHeader>
@@ -112,14 +112,7 @@ function ContractView() {
 
   return (
     <div>
-      {/*<Button variant="ghost" onClick={goBack} className="mb-4">
-        <ArrowLeft size={16} /> Back to packages
-      </Button>*/}
-
-      {/*<h1 className="text-2xl font-semibold mb-1">{contract.title}</h1>
-      <p className="text-muted-foreground mb-6">{selectedPackage.name}</p>*/}
-
-      <div className="prose prose-sm bg-white p-5 border h-[60vh] overflow-y-scroll mb-6 max-w-none">
+      <div className="prose prose-sm p-5 bg-background h-[50vh] overflow-y-scroll mb-6 max-w-none">
         <ReactMarkdown>{renderedContent}</ReactMarkdown>
       </div>
 
@@ -160,40 +153,38 @@ function PaymentView() {
   const { selectedPackage, deposit, balance, processPayment } = useBooking();
   if (!selectedPackage) return null;
   return (
-    <div>
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>{selectedPackage.name}</CardTitle>
-          <CardDescription>{selectedPackage.serviceType}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex justify-between">
-            <span>Package price</span>
-            <span className="font-medium">${selectedPackage.price}</span>
-          </div>
-          <div className="flex justify-between text-muted-foreground">
-            <span>Deposit ({selectedPackage.depositPercentage}%)</span>
-            <span>${deposit}</span>
-          </div>
-          <div className="flex justify-between text-muted-foreground">
-            <span>Balance due later</span>
-            <span>${balance}</span>
-          </div>
-          <div className="flex justify-between font-medium">
-            <span>Total</span>
-            <span>${selectedPackage.price}</span>
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button onClick={processPayment}>
-            <CreditCard size={16} /> Pay ${deposit} Deposit
-          </Button>
-          <Button variant="outline" onClick={processPayment}>
-            Pay ${selectedPackage.price} in Full
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>{selectedPackage.name}</CardTitle>
+        <CardDescription>{selectedPackage.serviceType}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="flex justify-between">
+          <span>Package price</span>
+          <span className="font-medium">${selectedPackage.price}</span>
+        </div>
+        <div className="flex justify-between text-muted-foreground">
+          <span>Deposit ({selectedPackage.depositPercentage}%)</span>
+          <span>${deposit}</span>
+        </div>
+        <div className="flex justify-between text-muted-foreground">
+          <span>Balance due later</span>
+          <span>${balance}</span>
+        </div>
+        <div className="flex justify-between font-medium">
+          <span>Total</span>
+          <span>${selectedPackage.price}</span>
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button onClick={processPayment}>
+          <CreditCard size={16} /> Pay ${deposit} Deposit
+        </Button>
+        <Button variant="outline" onClick={processPayment}>
+          Pay ${selectedPackage.price} in Full
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }
 
@@ -254,7 +245,7 @@ function StepTitle() {
   const { step } = useBooking();
   const title = BOOKING_STEPS.find((s) => s.step === step)?.title;
   return title ? (
-    <h1 className="text-2xl text-center font-medium">{title}</h1>
+    <h1 className="text-xl text-center font-medium">{title}</h1>
   ) : null;
 }
 
@@ -262,10 +253,14 @@ export default function BookPage() {
   useParams<{ providerId: string }>();
   return (
     <BookingProvider>
-      <div className="max-w-[700px] py-10 space-y-5 mx-auto p-5">
-        <StepTitle />
-        <StepIndicator />
-        <BookingStepContent />
+      <div className="w-screen h-screen flex items-center">
+        <div className="w-full space-y-4">
+          <StepIndicator />
+          <div className="max-w-[650px] bg-white border rounded-4xl shadow-xl space-y-5 mx-auto p-5">
+            <StepTitle />
+            <BookingStepContent />
+          </div>
+        </div>
       </div>
     </BookingProvider>
   );

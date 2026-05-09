@@ -152,7 +152,7 @@
 .prose h1,
 .prose h2,
 .prose h3 {
-  @apply mb-2 border-t pt-2;
+  @apply mb-2 pt-2;
 }
 
 .prose h1 {
