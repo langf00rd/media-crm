@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function ContractsPage() {
   return (
-    <Main title="Contracts">
+    <Main title="Legal contracts">
       <div className="mb-4 flex items-center gap-1 space-y-2">
         <Input
           placeholder="Search contracts..."
