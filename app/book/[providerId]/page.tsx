@@ -12,8 +12,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BookingProvider, useBooking } from "@/contexts/booking-context";
 import { BOOKING_STEPS } from "@/lib/content";
+import { getContracts, getOrganizationBySlug, getPackagesByOrg } from "@/lib/supabase/queries";
+import type { Contract, Package } from "@/lib/types";
 import { Check, CreditCard } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 function StepIndicator() {
@@ -66,7 +69,7 @@ function PackageSelection() {
             <p className="text-3xl font-bold text-primary">${pkg.price}</p>
             <p className="text-foreground">{pkg.description}</p>
             <ul className="space-y-1">
-              {pkg.inclusions.map((item, idx) => (
+              {pkg.features.map((item, idx) => (
                 <li
                   key={idx}
                   className="text-sm text-muted-foreground flex items-center gap-2"
@@ -161,7 +164,7 @@ function PaymentView() {
           <span className="font-medium">${selectedPackage.price}</span>
         </div>
         <div className="flex justify-between text-muted-foreground">
-          <span>Deposit ({selectedPackage.depositPercentage}%)</span>
+          <span>Deposit ({selectedPackage.deposit_percentage}%)</span>
           <span>${deposit}</span>
         </div>
         <div className="flex justify-between text-muted-foreground">
@@ -246,19 +249,52 @@ function StepTitle() {
   ) : null;
 }
 
-export default function BookPage() {
-  useParams<{ providerId: string }>();
+function BookingInner() {
+  const { step, goBack } = useBooking();
   return (
-    <BookingProvider>
-      <div className="w-screen h-screen bg-white md:bg-background flex items-center p-5">
-        <div className="w-full space-y-4">
-          <StepTitle />
-          <StepIndicator />
-          <div className="max-w-[650px] bg-white md:border rounded-4xl md:shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
-            <BookingStepContent />
-          </div>
+    <div className="w-screen h-screen bg-white md:bg-background flex items-center p-5">
+      <div className="w-full space-y-4">
+        <StepTitle />
+        <StepIndicator />
+        <div className="max-w-[650px] bg-white md:border rounded-4xl md:shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
+          <BookingStepContent />
         </div>
       </div>
+    </div>
+  );
+}
+
+export default function BookPage() {
+  const params = useParams<{ providerId: string }>();
+  const [packages, setPackages] = useState<Package[]>([]);
+  const [contracts, setContracts] = useState<Contract[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const org = await getOrganizationBySlug(params.providerId);
+      if (!org) {
+        setError("Organization not found");
+        setLoading(false);
+        return;
+      }
+      const [pkgs, ctracts] = await Promise.all([
+        getPackagesByOrg(org.id),
+        getContracts(),
+      ]);
+      setPackages(pkgs);
+      setContracts(ctracts);
+      setLoading(false);
+    })();
+  }, [params.providerId]);
+
+  if (loading) return <div className="p-6">Loading...</div>;
+  if (error) return <div className="p-6">{error}</div>;
+
+  return (
+    <BookingProvider packages={packages} contracts={contracts}>
+      <BookingInner />
     </BookingProvider>
   );
 }

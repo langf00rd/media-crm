@@ -2,19 +2,29 @@
 
 import Main from "@/components/main";
 import { Button } from "@/components/ui/button";
-import { mockContracts } from "@/lib/data";
+import { getContract } from "@/lib/supabase/queries";
+import type { Contract } from "@/lib/types";
 import { Share2 } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 export default function ContractDetailPage() {
   const params = useParams<{ id: string }>();
-  const contract = mockContracts.find((c) => c.id === params.id);
+  const [contract, setContract] = useState<Contract | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getContract(params.id).then(setContract).finally(() => setLoading(false));
+  }, [params.id]);
+
+  if (loading) return <div className="p-6">Loading...</div>;
+  if (!contract) return <div className="p-6">Contract not found</div>;
 
   return (
     <Main
       showBackButton
-      title={contract?.title}
+      title={contract.title}
       slotRight={
         <div className="flex gap-2">
           <Button variant="outline">Download</Button>
@@ -26,7 +36,7 @@ export default function ContractDetailPage() {
     >
       <div className="prose prose-sm bg-white p-5 border shadow-2xs mx-auto">
         <div className="prose prose-sm max-w-none">
-          <ReactMarkdown>{contract?.content}</ReactMarkdown>
+          <ReactMarkdown>{contract.content}</ReactMarkdown>
         </div>
       </div>
     </Main>

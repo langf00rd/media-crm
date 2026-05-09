@@ -11,9 +11,9 @@ export default function HomePage() {
       </h1>
       <p className="max-w-xl text-center md:text-xl text-muted-foreground">
         <>
-          Send contracts, collect signatures, request deposits, and manage
-          invoices in one simple flow. Built for service providers who are tired
-          of WhatsApp chaos and unpaid work
+          Send contracts, collect signatures, and request deposits in one simple
+          flow. Built for service providers who are tired of WhatsApp chaos and
+          unpaid work
         </>
       </p>
       <div className="flex flex-col gap-1 mt-10">

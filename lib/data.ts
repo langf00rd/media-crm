@@ -1,88 +1,18 @@
-import type { Contract, Job, Package, Provider } from "./types";
+import type { Contract, Organization, Package, Request } from "./types";
 
-export type { Contract, Job, Package, Provider };
+export type { Contract, Organization, Package, Request };
 
-export const mockProvider: Provider = {
-  id: "sarah-captures",
-  name: "Sarah Mensah",
-  businessName: "Sarah Captures",
-  email: "sarah@captures.com",
+export const mockOrganization: Organization = {
+  id: "1",
+  name: "Sarah Captures",
+  logo: null,
+  category: "Photography",
   phone: "+233541234567",
-  serviceCategory: "Photography",
-  bookingUrl: "app.com/book/sarah-captures",
+  email: "sarah@captures.com",
+  slug: "sarah-captures",
+  created_dt: "2024-01-01T00:00:00Z",
+  updated_dt: "2024-01-01T00:00:00Z",
 };
-
-export const mockJobs: Job[] = [
-  {
-    id: "job-001",
-    clientName: "Ama Owusu",
-    email: "ama@email.com",
-    phone: "+233542222222",
-    serviceType: "Wedding Photography",
-    eventDate: "June 15, 2024",
-    location: "Accra, Ghana",
-    packageName: "Premium Wedding",
-    packagePrice: 2500,
-    depositAmount: 625,
-    depositPaid: true,
-    balanceAmount: 1875,
-    balancePaid: false,
-    contractSigned: true,
-    status: "in-progress",
-  },
-  {
-    id: "job-002",
-    clientName: "Kwame Asante",
-    email: "kwame@email.com",
-    phone: "+233543333333",
-    serviceType: "Corporate Event",
-    eventDate: "May 20, 2024",
-    location: "Kumasi, Ghana",
-    packageName: "Standard Corporate",
-    packagePrice: 1200,
-    depositAmount: 300,
-    depositPaid: true,
-    balanceAmount: 900,
-    balancePaid: true,
-    contractSigned: true,
-    status: "completed",
-    completedDate: "May 21, 2024",
-  },
-  {
-    id: "job-003",
-    clientName: "Abena Boateng",
-    email: "abena@email.com",
-    phone: "+233544444444",
-    serviceType: "Engagement Session",
-    eventDate: "June 8, 2024",
-    location: "Accra, Ghana",
-    packageName: "Engagement Package",
-    packagePrice: 800,
-    depositAmount: 200,
-    depositPaid: false,
-    balanceAmount: 600,
-    balancePaid: false,
-    contractSigned: false,
-    status: "pending",
-  },
-  {
-    id: "job-004",
-    clientName: "Kofi Mensah",
-    email: "kofi@email.com",
-    phone: "+233545555555",
-    serviceType: "Product Photography",
-    eventDate: "May 10, 2024",
-    location: "Tema, Ghana",
-    packageName: "Standard Product",
-    packagePrice: 400,
-    depositAmount: 100,
-    depositPaid: true,
-    balanceAmount: 300,
-    balancePaid: true,
-    contractSigned: true,
-    status: "cancelled",
-  },
-];
 
 export const mockPackages: Package[] = [
   {
@@ -90,226 +20,258 @@ export const mockPackages: Package[] = [
     name: "Premium Wedding",
     description: "Full-day coverage with album and prints",
     price: 2500,
-    depositPercentage: 25,
-    inclusions: [
-      "8 hours coverage",
-      "500+ photos",
-      "Digital album",
-      "Print package",
-    ],
-    contractId: "service_agreement",
+    deposit_percentage: 25,
+    features: ["8 hours coverage", "500+ photos", "Digital album", "Print package"],
+    contract_id: "contract-001",
+    created_dt: "2024-01-01T00:00:00Z",
+    updated_dt: "2024-01-01T00:00:00Z",
   },
   {
     id: "pkg-002",
     name: "Standard Corporate",
     description: "Half-day event coverage",
     price: 1200,
-    depositPercentage: 25,
-    inclusions: ["4 hours coverage", "200+ photos", "Digital delivery"],
-    contractId: "independent_contractor",
+    deposit_percentage: 25,
+    features: ["4 hours coverage", "200+ photos", "Digital delivery"],
+    contract_id: "contract-002",
+    created_dt: "2024-01-01T00:00:00Z",
+    updated_dt: "2024-01-01T00:00:00Z",
+  },
+  {
+    id: "pkg-003",
+    name: "Engagement Package",
+    description: "A beautiful engagement shoot",
+    price: 800,
+    deposit_percentage: 25,
+    features: ["2 hours coverage", "100+ photos", "Online gallery"],
+    created_dt: "2024-01-01T00:00:00Z",
+    updated_dt: "2024-01-01T00:00:00Z",
+  },
+  {
+    id: "pkg-004",
+    name: "Standard Product",
+    description: "Product photography for small businesses",
+    price: 400,
+    deposit_percentage: 25,
+    features: ["1 hour coverage", "20 edited photos", "Usage rights"],
+    created_dt: "2024-01-01T00:00:00Z",
+    updated_dt: "2024-01-01T00:00:00Z",
   },
 ];
 
 export const mockContracts: Contract[] = [
   {
-    id: "service_agreement",
+    id: "contract-001",
     title: "Service Agreement",
     description:
-      "A comprehensive agreement defining scope, deliverables, timelines, and payment obligations between a service provider and client.",
-    excerpt:
-      "Defines services, timelines, fees, and responsibilities of both parties.",
+      "A comprehensive agreement defining scope, deliverables, timelines, and payment obligations.",
     content: `
 # Service Agreement
 
 This Service Agreement ("Agreement") is entered into by and between the **Service Provider** and the **Client**.
 
 ## 1. Scope of Services
-The Service Provider agrees to deliver services as defined in an attached scope of work (SOW). Any work outside this scope will require written approval and may incur additional charges.
+The Service Provider agrees to deliver services as defined in an attached scope of work (SOW).
 
 ## 2. Deliverables
-Deliverables, formats, and acceptance criteria shall be agreed upon before work begins. The Client agrees to review and approve deliverables within a reasonable timeframe.
+Deliverables, formats, and acceptance criteria shall be agreed upon before work begins.
 
 ## 3. Payment Terms
 - Fees shall be agreed in **GHS, NGN, USD, or other mutually agreed currency**.
 - A deposit of **30%–70%** may be required before work begins.
 - Final payment is due upon delivery or milestone completion.
-- Late payments beyond **7–14 days** may incur penalties or service suspension.
 
 ## 4. Client Responsibilities
-The Client agrees to:
-- Provide accurate requirements and timely feedback
-- Supply necessary materials or access
-- Avoid delays that impact delivery timelines
+The Client agrees to provide accurate requirements and timely feedback.
 
 ## 5. Timeline
-Project timelines depend on Client responsiveness. Delays caused by the Client may extend delivery dates.
+Project timelines depend on Client responsiveness.
 
 ## 6. Revisions & Scope Creep
-A limited number of revisions may be included. Additional revisions or scope changes will be billed separately.
+A limited number of revisions may be included.
 
 ## 7. Termination
-Either party may terminate this Agreement with written notice. Any completed work must be paid for prior to termination.
+Either party may terminate this Agreement with written notice.
 
 ## 8. Liability
-The Service Provider shall not be liable for indirect or consequential damages arising from the use of delivered work.
+The Service Provider shall not be liable for indirect or consequential damages.
 
 ## 9. Dispute Resolution
-Disputes shall first be resolved through negotiation. If unresolved, parties may pursue mediation or arbitration under applicable local laws.
+Disputes shall first be resolved through negotiation.
 
 ---
 
 **Client Name:** {{full_name}}
 **Signature:** {{signature}}
 `,
-    fields: {
-      full_name: "",
-      signature: "",
-    },
+    fields: { full_name: "", signature: "" },
+    created_dt: "2024-01-01T00:00:00Z",
+    updated_dt: "2024-01-01T00:00:00Z",
   },
   {
-    id: "retainer_agreement",
-    title: "Retainer Agreement",
-    description:
-      "An ongoing service agreement with recurring payments for continued access to services.",
-    excerpt: "Covers ongoing services billed on a recurring basis.",
-    content: `
-# Retainer Agreement
-
-This Retainer Agreement ("Agreement") establishes an ongoing working relationship between the **Service Provider** and the **Client**.
-
-## 1. Retainer Fee
-The Client agrees to pay a recurring fee (monthly or quarterly) for access to services.
-
-## 2. Scope of Work
-The retainer covers a predefined scope or number of service hours. Unused hours may not roll over unless agreed otherwise.
-
-## 3. Priority Access
-Retainer clients receive prioritized service delivery compared to non-retainer clients.
-
-## 4. Payment Terms
-- Payments are due in advance of each billing cycle.
-- Failure to pay may result in suspension of services.
-- Fees may be adjusted with prior notice.
-
-## 5. Availability
-The Service Provider will allocate reasonable time and resources based on the agreed retainer level.
-
-## 6. Term & Renewal
-This Agreement renews automatically unless terminated by either party with prior notice (typically 7–30 days).
-
-## 7. Termination
-Upon termination, all outstanding balances must be settled immediately.
-
-## 8. Dispute Resolution
-Disputes shall be handled through negotiation, mediation, or arbitration under applicable regional laws.
-
----
-
-**Client Name:** {{full_name}}
-**Signature:** {{signature}}
-`,
-    fields: {
-      full_name: "",
-      signature: "",
-    },
-  },
-  {
-    id: "nda",
-    title: "Non-Disclosure Agreement (NDA)",
-    description:
-      "A confidentiality agreement protecting sensitive business information shared between parties.",
-    excerpt: "Protects confidential information from being disclosed.",
-    content: `
-# Non-Disclosure Agreement (NDA)
-
-This Agreement is made between the **Disclosing Party** and the **Receiving Party**.
-
-## 1. Definition of Confidential Information
-Confidential Information includes all non-public, proprietary, or sensitive information shared in any form.
-
-## 2. Obligations
-The Receiving Party agrees to:
-- Not disclose confidential information to third parties
-- Use the information solely for the intended purpose
-- Take reasonable steps to protect the information
-
-## 3. Exclusions
-Confidential Information does not include:
-- Information already in the public domain
-- Information independently developed without access
-- Information disclosed with prior consent
-
-## 4. Duration
-This Agreement remains in effect for **2–5 years** or as agreed.
-
-## 5. Breach
-Any breach may result in legal action, including claims for damages or injunctions.
-
-## 6. Jurisdiction
-This Agreement shall be governed by the laws of the applicable country or jurisdiction agreed upon by both parties.
-
----
-
-**Client Name:** {{full_name}}
-**Signature:** {{signature}}
-`,
-    fields: {
-      full_name: "",
-      signature: "",
-    },
-  },
-  {
-    id: "independent_contractor",
+    id: "contract-002",
     title: "Independent Contractor Agreement",
     description:
-      "Defines the relationship between a business and a contractor, clarifying non-employment status and responsibilities.",
-    excerpt:
-      "Establishes terms for working with non-employee service providers.",
+      "Defines the relationship between a business and a contractor, clarifying non-employment status.",
     content: `
 # Independent Contractor Agreement
 
 This Agreement is entered into between the **Company** and the **Contractor**.
 
 ## 1. Relationship
-The Contractor is an independent entity and not an employee. Nothing in this Agreement creates a partnership or employment relationship.
+The Contractor is an independent entity and not an employee.
 
 ## 2. Services
-The Contractor agrees to perform services as outlined in a separate scope or agreement.
+The Contractor agrees to perform services as outlined in a separate scope.
 
 ## 3. Compensation
 - Payment may be fixed, hourly, or milestone-based.
-- Payments shall be made in agreed currency (GHS, NGN, USD, etc.).
-- The Contractor is responsible for invoicing unless otherwise agreed.
 
 ## 4. Taxes & Compliance
-The Contractor is solely responsible for:
-- Personal income taxes
-- Business registration (if applicable)
-- Compliance with local regulations
+The Contractor is solely responsible for personal income taxes.
 
 ## 5. Tools & Equipment
-The Contractor shall provide their own tools, equipment, and resources unless otherwise agreed.
+The Contractor shall provide their own tools and equipment.
 
 ## 6. Confidentiality
 The Contractor agrees to maintain confidentiality of all Company information.
 
 ## 7. Termination
-Either party may terminate with notice. Outstanding work must be compensated accordingly.
+Either party may terminate with notice.
 
 ## 8. Liability
-The Contractor assumes responsibility for the quality and legality of their work.
+The Contractor assumes responsibility for the quality of their work.
 
 ## 9. Dispute Resolution
-Disputes shall be resolved through negotiation, mediation, or arbitration in the agreed jurisdiction.
+Disputes shall be resolved through negotiation, mediation, or arbitration.
 
 ---
 
 **Client Name:** {{full_name}}
 **Signature:** {{signature}}
 `,
-    fields: {
-      full_name: "",
-      signature: "",
-    },
+    fields: { full_name: "", signature: "" },
+    created_dt: "2024-01-01T00:00:00Z",
+    updated_dt: "2024-01-01T00:00:00Z",
+  },
+  {
+    id: "contract-003",
+    title: "Retainer Agreement",
+    description:
+      "An ongoing service agreement with recurring payments for continued access to services.",
+    content: `
+# Retainer Agreement
+
+This Retainer Agreement establishes an ongoing working relationship between the **Service Provider** and the **Client**.
+
+## 1. Retainer Fee
+The Client agrees to pay a recurring fee for access to services.
+
+## 2. Scope of Work
+The retainer covers a predefined scope or number of service hours.
+
+## 3. Priority Access
+Retainer clients receive prioritized service delivery.
+
+## 4. Payment Terms
+Payments are due in advance of each billing cycle.
+
+---
+
+**Client Name:** {{full_name}}
+**Signature:** {{signature}}
+`,
+    fields: { full_name: "", signature: "" },
+    created_dt: "2024-01-01T00:00:00Z",
+    updated_dt: "2024-01-01T00:00:00Z",
+  },
+  {
+    id: "contract-004",
+    title: "Non-Disclosure Agreement (NDA)",
+    description:
+      "A confidentiality agreement protecting sensitive business information shared between parties.",
+    content: `
+# Non-Disclosure Agreement (NDA)
+
+This Agreement is made between the **Disclosing Party** and the **Receiving Party**.
+
+## 1. Definition of Confidential Information
+Confidential Information includes all non-public, proprietary, or sensitive information.
+
+## 2. Obligations
+The Receiving Party agrees to not disclose confidential information to third parties.
+
+## 3. Exclusions
+Confidential Information does not include information already in the public domain.
+
+## 4. Duration
+This Agreement remains in effect for 2–5 years or as agreed.
+
+## 5. Breach
+Any breach may result in legal action.
+
+---
+
+**Client Name:** {{full_name}}
+**Signature:** {{signature}}
+`,
+    fields: { full_name: "", signature: "" },
+    created_dt: "2024-01-01T00:00:00Z",
+    updated_dt: "2024-01-01T00:00:00Z",
+  },
+];
+
+export const mockRequests: Request[] = [
+  {
+    id: "req-001",
+    first_name: "Ama",
+    last_name: "Owusu",
+    signature: "",
+    package_id: "pkg-001",
+    organization_id: "1",
+    terms_accepted: true,
+    status: "in-progress",
+    completed_dt: "",
+    created_dt: "2024-05-01T00:00:00Z",
+    updated_dt: "2024-05-01T00:00:00Z",
+  },
+  {
+    id: "req-002",
+    first_name: "Kwame",
+    last_name: "Asante",
+    signature: "",
+    package_id: "pkg-002",
+    organization_id: "1",
+    terms_accepted: true,
+    status: "completed",
+    completed_dt: "2024-05-21T00:00:00Z",
+    created_dt: "2024-04-15T00:00:00Z",
+    updated_dt: "2024-05-21T00:00:00Z",
+  },
+  {
+    id: "req-003",
+    first_name: "Abena",
+    last_name: "Boateng",
+    signature: "",
+    package_id: "pkg-003",
+    organization_id: "1",
+    terms_accepted: false,
+    status: "pending",
+    completed_dt: "",
+    created_dt: "2024-06-01T00:00:00Z",
+    updated_dt: "2024-06-01T00:00:00Z",
+  },
+  {
+    id: "req-004",
+    first_name: "Kofi",
+    last_name: "Mensah",
+    signature: "",
+    package_id: "pkg-004",
+    organization_id: "1",
+    terms_accepted: true,
+    status: "cancelled",
+    completed_dt: "",
+    created_dt: "2024-04-20T00:00:00Z",
+    updated_dt: "2024-05-10T00:00:00Z",
   },
 ];

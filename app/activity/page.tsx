@@ -9,11 +9,12 @@ import {
   ItemDescription,
   ItemTitle,
 } from "@/components/ui/item";
-import { mockJobs } from "@/lib/data";
+import { getRequests } from "@/lib/supabase/queries";
+import type { Request } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
-function JobsContent() {
+function RequestsContent() {
   const searchParams = useSearchParams();
   const initialFilter =
     (searchParams.get("filter") as
@@ -21,11 +22,13 @@ function JobsContent() {
       | "active"
       | "completed"
       | "cancelled") || "all";
-  const [jobFilter, setJobFilter] = useState(initialFilter);
+  const [requestFilter, setRequestFilter] = useState(initialFilter);
+  const [requests, setRequests] = useState<Request[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (searchParams.get("filter")) {
-      setJobFilter(
+      setRequestFilter(
         searchParams.get("filter") as
           | "all"
           | "active"
@@ -35,14 +38,10 @@ function JobsContent() {
     }
   }, [searchParams]);
 
-  const getFilteredJobs = () => {
-    if (jobFilter === "all") return mockJobs;
-    if (jobFilter === "active")
-      return mockJobs.filter(
-        (job) => job.status === "in-progress" || job.status === "pending",
-      );
-    return mockJobs.filter((job) => job.status === jobFilter);
-  };
+  useEffect(() => {
+    setLoading(true);
+    getRequests(requestFilter).then(setRequests).finally(() => setLoading(false));
+  }, [requestFilter]);
 
   return (
     <Main title="All activities">
@@ -51,8 +50,8 @@ function JobsContent() {
           (filter) => (
             <Button
               key={filter}
-              onClick={() => setJobFilter(filter)}
-              className={`border ${jobFilter === filter ? "bg-primary text-white" : "bg-white border-neutral-200/80 text-foreground"}`}
+              onClick={() => setRequestFilter(filter)}
+              className={`border ${requestFilter === filter ? "bg-primary text-white" : "bg-white border-neutral-200/80 text-foreground"}`}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </Button>
@@ -60,26 +59,32 @@ function JobsContent() {
         )}
       </div>
       <div className="space-y-4 mt-8">
-        {getFilteredJobs().map((a, i) => (
-          <Item key={i} className="shadow-xs bg-white">
-            <ItemContent>
-              <ItemTitle>{a.clientName}</ItemTitle>
-              <ItemDescription>{a.serviceType}</ItemDescription>
-            </ItemContent>
-            <ItemActions>
-              <Button variant="outline">Mark as completed</Button>
-            </ItemActions>
-          </Item>
-        ))}
+        {loading ? (
+          <p className="text-text-secondary">Loading...</p>
+        ) : requests.length === 0 ? (
+          <p className="text-text-secondary">No requests found.</p>
+        ) : (
+          requests.map((r) => (
+            <Item key={r.id} className="shadow-xs bg-white">
+              <ItemContent>
+                <ItemTitle>{`${r.first_name} ${r.last_name}`}</ItemTitle>
+                <ItemDescription>{r.status}</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Button variant="outline">Mark as completed</Button>
+              </ItemActions>
+            </Item>
+          ))
+        )}
       </div>
     </Main>
   );
 }
 
-export default function JobsPage() {
+export default function RequestsPage() {
   return (
     <Suspense>
-      <JobsContent />
+      <RequestsContent />
     </Suspense>
   );
 }

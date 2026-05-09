@@ -1,30 +1,27 @@
-export interface Provider {
+export interface Organization {
   id: string;
   name: string;
-  businessName: string;
-  email: string;
-  phone: string;
-  serviceCategory: string;
-  bookingUrl: string;
+  logo: string | null;
+  category: string;
+  phone: string | null;
+  email: string | null;
+  slug: string;
+  created_dt: string;
+  updated_dt: string;
 }
 
-export interface Job {
+export interface Request {
   id: string;
-  clientName: string;
-  email: string;
-  phone: string;
-  serviceType: string;
-  eventDate: string;
-  location: string;
-  packageName: string;
-  packagePrice: number;
-  depositAmount: number;
-  depositPaid: boolean;
-  balanceAmount: number;
-  balancePaid: boolean;
-  contractSigned: boolean;
-  status: "pending" | "in-progress" | "completed" | "cancelled";
-  completedDate?: string;
+  first_name: string;
+  last_name: string;
+  signature: string;
+  package_id: string;
+  organization_id: string;
+  terms_accepted: boolean;
+  status: string;
+  completed_dt: string;
+  created_dt: string;
+  updated_dt: string;
 }
 
 export interface Package {
@@ -32,20 +29,22 @@ export interface Package {
   name: string;
   description: string;
   price: number;
-  depositPercentage: number;
-  inclusions: string[];
-  contractId?: string;
+  deposit_percentage: number;
+  features: string[];
+  contract_id?: string;
+  created_dt: string;
+  updated_dt: string;
 }
 
 export interface Contract {
   id: string;
   title: string;
   description: string;
-  excerpt?: string;
   content: string;
+  created_dt: string;
+  updated_dt: string;
   fields: {
     full_name: string;
     signature: string;
   };
-  status?: string;
 }

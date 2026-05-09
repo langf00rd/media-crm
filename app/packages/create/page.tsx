@@ -19,22 +19,37 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { mockContracts } from "@/lib/data";
+import { getContracts } from "@/lib/supabase/queries";
+import { createPackage } from "@/lib/supabase/queries";
+import type { Contract } from "@/lib/types";
 import { Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function CreatePackagePage() {
+  const [contracts, setContracts] = useState<Contract[]>([]);
   const [packageForm, setPackageForm] = useState({
     name: "",
     description: "",
     price: "",
-    depositPercentage: "25",
-    contractId: "",
-    inclusions: "",
+    deposit_percentage: "25",
+    contract_id: "",
+    features: "",
   });
   const [saved, setSaved] = useState(false);
 
-  const handleSave = () => {
+  useEffect(() => {
+    getContracts().then(setContracts);
+  }, []);
+
+  const handleSave = async () => {
+    await createPackage({
+      name: packageForm.name,
+      description: packageForm.description,
+      price: Number(packageForm.price),
+      deposit_percentage: Number(packageForm.deposit_percentage),
+      features: packageForm.features.split("\n").filter(Boolean),
+      contract_id: packageForm.contract_id || undefined,
+    });
     setSaved(true);
     setTimeout(() => {
       setSaved(false);
@@ -55,9 +70,7 @@ export default function CreatePackagePage() {
               <Input
                 type="text"
                 value={packageForm.name}
-                onChange={(e) =>
-                  setPackageForm({ ...packageForm, name: e.target.value })
-                }
+                onChange={(e) => setPackageForm({ ...packageForm, name: e.target.value })}
                 placeholder="e.g., Premium Wedding Package"
               />
             </div>
@@ -66,57 +79,46 @@ export default function CreatePackagePage() {
               <Label>Description</Label>
               <Textarea
                 value={packageForm.description}
-                onChange={(e) =>
-                  setPackageForm({
-                    ...packageForm,
-                    description: e.target.value,
-                  })
-                }
+                onChange={(e) => setPackageForm({ ...packageForm, description: e.target.value })}
                 placeholder="Describe what this package includes"
                 rows={3}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>Price ($)</Label>
-              <Input
-                type="number"
-                value={packageForm.price}
-                onChange={(e) =>
-                  setPackageForm({ ...packageForm, price: e.target.value })
-                }
-                placeholder="0.00"
-              />
-            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Price ($)</Label>
+                <Input
+                  type="number"
+                  value={packageForm.price}
+                  onChange={(e) => setPackageForm({ ...packageForm, price: e.target.value })}
+                  placeholder="0.00"
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label>Deposit Percentage (%)</Label>
-              <Input
-                type="number"
-                value={packageForm.depositPercentage}
-                onChange={(e) =>
-                  setPackageForm({
-                    ...packageForm,
-                    depositPercentage: e.target.value,
-                  })
-                }
-              />
+              <div className="space-y-2">
+                <Label>Deposit Percentage (%)</Label>
+                <Input
+                  type="number"
+                  value={packageForm.deposit_percentage}
+                  onChange={(e) => setPackageForm({ ...packageForm, deposit_percentage: e.target.value })}
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
               <Label>Linked Contract</Label>
               <Select
-                value={packageForm.contractId}
+                value={packageForm.contract_id}
                 onValueChange={(value) => {
-                  if (value)
-                    setPackageForm({ ...packageForm, contractId: value });
+                  if (value) setPackageForm({ ...packageForm, contract_id: value });
                 }}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a contract" />
                 </SelectTrigger>
                 <SelectContent>
-                  {mockContracts.map((c) => (
+                  {contracts.map((c) => (
                     <SelectItem key={c.id} value={c.id}>
                       {c.title}
                     </SelectItem>
@@ -126,13 +128,11 @@ export default function CreatePackagePage() {
             </div>
 
             <div className="space-y-2">
-              <Label>Inclusions (one per line)</Label>
+              <Label>Features (one per line)</Label>
               <Textarea
-                value={packageForm.inclusions}
-                onChange={(e) =>
-                  setPackageForm({ ...packageForm, inclusions: e.target.value })
-                }
-                placeholder="4 hours coverage&#10;200+ photos&#10;Digital delivery"
+                value={packageForm.features}
+                onChange={(e) => setPackageForm({ ...packageForm, features: e.target.value })}
+                placeholder="8 hours coverage&#10;500+ photos&#10;Digital album"
                 rows={4}
               />
             </div>

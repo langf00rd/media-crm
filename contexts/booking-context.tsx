@@ -1,7 +1,6 @@
 "use client";
 
 import { BOOKING_STEPS } from "@/lib/content";
-import { mockContracts, mockPackages } from "@/lib/data";
 import type { Contract, Package } from "@/lib/types";
 import {
   createContext,
@@ -39,7 +38,15 @@ export interface BookingContextValue extends BookingState {
 
 const BookingContext = createContext<BookingContextValue | null>(null);
 
-export function BookingProvider({ children }: { children: ReactNode }) {
+export function BookingProvider({
+  children,
+  packages,
+  contracts,
+}: {
+  children: ReactNode;
+  packages: Package[];
+  contracts: Contract[];
+}) {
   const [step, setStep] = useState<BookingStep>("packages");
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [contract, setContract] = useState<Contract | null>(null);
@@ -48,21 +55,23 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     signature: "",
   });
 
-  const packages = mockPackages;
   const deposit = selectedPackage
-    ? Math.round(selectedPackage.price * selectedPackage.depositPercentage) /
+    ? Math.round(selectedPackage.price * selectedPackage.deposit_percentage) /
       100
     : 0;
   const balance = selectedPackage ? selectedPackage.price - deposit : 0;
 
-  const selectPackage = useCallback((pkg: Package) => {
-    setSelectedPackage(pkg);
-    const id = pkg.contractId || "service_agreement";
-    const found = mockContracts.find((c) => c.id === id) || null;
-    setContract(found);
-    setFormData({ full_name: "", signature: "" });
-    setStep("contract");
-  }, []);
+  const selectPackage = useCallback(
+    (pkg: Package) => {
+      setSelectedPackage(pkg);
+      const id = pkg.contract_id || "";
+      const found = contracts.find((c) => c.id === id) || null;
+      setContract(found);
+      setFormData({ full_name: "", signature: "" });
+      setStep("contract");
+    },
+    [contracts],
+  );
 
   const updateFormData = useCallback((data: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...data }));

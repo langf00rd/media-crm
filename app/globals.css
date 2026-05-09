@@ -178,3 +178,7 @@ form {
 fieldset {
   @apply space-y-2;
 }
+
+fieldset {
+  @apply w-full;
+}

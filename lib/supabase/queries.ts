@@ -1,0 +1,169 @@
+import { supabase } from "./client";
+import type { Contract, Organization, Package, Request } from "@/lib/types";
+
+// ------------------------------------------------------------------
+// Helpers
+// ------------------------------------------------------------------
+
+const ORG_SLUG = "sarah-captures";
+
+let _orgId: string | null = null;
+
+async function ensureOrgId(): Promise<string> {
+  if (_orgId) return _orgId;
+  const { data } = await supabase
+    .from("organizations")
+    .select("id")
+    .eq("slug", ORG_SLUG)
+    .single();
+  _orgId = data?.id ?? null;
+  return _orgId!;
+}
+
+export function resetOrgCache() {
+  _orgId = null;
+}
+
+function mapRow<T>(row: Record<string, unknown>): T {
+  return row as unknown as T;
+}
+
+// ------------------------------------------------------------------
+// Organizations
+// ------------------------------------------------------------------
+
+export async function getOrganizationBySlug(
+  slug: string,
+): Promise<Organization | null> {
+  const { data } = await supabase
+    .from("organizations")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+  return data ? mapRow<Organization>(data) : null;
+}
+
+export async function getCurrentOrganization(): Promise<Organization | null> {
+  return getOrganizationBySlug(ORG_SLUG);
+}
+
+export async function updateOrganization(
+  id: string,
+  updates: Partial<Pick<Organization, "name" | "category" | "email" | "phone">>,
+): Promise<void> {
+  await supabase.from("organizations").update(updates).eq("id", id);
+}
+
+// ------------------------------------------------------------------
+// Packages
+// ------------------------------------------------------------------
+
+export async function getPackages(): Promise<Package[]> {
+  const { data } = await supabase
+    .from("packages")
+    .select("*")
+    .order("created_dt", { ascending: false });
+  return (data ?? []).map((r) => mapRow<Package>(r));
+}
+
+export async function getPackage(id: string): Promise<Package | null> {
+  const { data } = await supabase.from("packages").select("*").eq("id", id).single();
+  return data ? mapRow<Package>(data) : null;
+}
+
+export async function createPackage(
+  input: Omit<Package, "id" | "created_dt" | "updated_dt">,
+): Promise<Package | null> {
+  const orgId = await ensureOrgId();
+  const { data } = await supabase
+    .from("packages")
+    .insert({ ...input, organization_id: orgId })
+    .select()
+    .single();
+  return data ? mapRow<Package>(data) : null;
+}
+
+export async function updatePackage(
+  id: string,
+  updates: Partial<Pick<Package, "name" | "description" | "price" | "deposit_percentage" | "features" | "contract_id">>,
+): Promise<void> {
+  await supabase.from("packages").update(updates).eq("id", id);
+}
+
+export async function deletePackage(id: string): Promise<void> {
+  await supabase.from("packages").delete().eq("id", id);
+}
+
+export async function getPackagesByOrg(
+  orgId: string,
+): Promise<Package[]> {
+  const { data } = await supabase
+    .from("packages")
+    .select("*")
+    .eq("organization_id", orgId)
+    .order("created_dt", { ascending: false });
+  return (data ?? []).map((r) => mapRow<Package>(r));
+}
+
+// ------------------------------------------------------------------
+// Contracts
+// ------------------------------------------------------------------
+
+export async function getContracts(): Promise<Contract[]> {
+  const { data } = await supabase
+    .from("contracts")
+    .select("*")
+    .order("created_dt", { ascending: false });
+  return (data ?? []).map((r) => mapRow<Contract>(r));
+}
+
+export async function getContract(id: string): Promise<Contract | null> {
+  const { data } = await supabase.from("contracts").select("*").eq("id", id).single();
+  return data ? mapRow<Contract>(data) : null;
+}
+
+// ------------------------------------------------------------------
+// Requests
+// ------------------------------------------------------------------
+
+export async function getRequests(
+  statusFilter?: string,
+): Promise<Request[]> {
+  let query = supabase.from("requests").select("*");
+  if (statusFilter && statusFilter !== "all") {
+    if (statusFilter === "active") {
+      query = query.in("status", ["pending", "in-progress"]);
+    } else {
+      query = query.eq("status", statusFilter);
+    }
+  }
+  const { data } = await query.order("created_dt", { ascending: false });
+  return (data ?? []).map((r) => mapRow<Request>(r));
+}
+
+export async function getRequest(id: string): Promise<Request | null> {
+  const { data } = await supabase.from("requests").select("*").eq("id", id).single();
+  return data ? mapRow<Request>(data) : null;
+}
+
+export async function updateRequestStatus(
+  id: string,
+  status: string,
+): Promise<void> {
+  const updates: Record<string, unknown> = { status };
+  if (status === "completed") {
+    updates.completed_dt = new Date().toISOString();
+  }
+  await supabase.from("requests").update(updates).eq("id", id);
+}
+
+export async function createRequest(
+  input: Pick<Request, "first_name" | "last_name" | "signature" | "package_id" | "organization_id" | "terms_accepted">,
+): Promise<Request | null> {
+  const { data } = await supabase
+    .from("requests")
+    .insert(input)
+    .select()
+    .single();
+  return data ? mapRow<Request>(data) : null;
+}
