@@ -21,7 +21,12 @@ export const mockPackages: Package[] = [
     description: "Full-day coverage with album and prints",
     price: 2500,
     deposit_percentage: 25,
-    features: ["8 hours coverage", "500+ photos", "Digital album", "Print package"],
+    features: [
+      "8 hours coverage",
+      "500+ photos",
+      "Digital album",
+      "Print package",
+    ],
     contract_id: "contract-001",
     created_dt: "2024-01-01T00:00:00Z",
     updated_dt: "2024-01-01T00:00:00Z",
@@ -101,10 +106,15 @@ Disputes shall first be resolved through negotiation.
 
 ---
 
-**Client Name:** {{full_name}}
+**Client First Name:** {{first_name}}
+**Client Last Name:** {{last_name}}
 **Signature:** {{signature}}
 `,
-    fields: { full_name: "", signature: "" },
+    fields: {
+      last_name: "string",
+      first_name: "string",
+      signature: "string",
+    },
     created_dt: "2024-01-01T00:00:00Z",
     updated_dt: "2024-01-01T00:00:00Z",
   },
@@ -147,10 +157,15 @@ Disputes shall be resolved through negotiation, mediation, or arbitration.
 
 ---
 
-**Client Name:** {{full_name}}
+**Client First Name:** {{first_name}}
+**Client Last Name:** {{last_name}}
 **Signature:** {{signature}}
 `,
-    fields: { full_name: "", signature: "" },
+    fields: {
+      last_name: "string",
+      first_name: "string",
+      signature: "string",
+    },
     created_dt: "2024-01-01T00:00:00Z",
     updated_dt: "2024-01-01T00:00:00Z",
   },
@@ -178,10 +193,15 @@ Payments are due in advance of each billing cycle.
 
 ---
 
-**Client Name:** {{full_name}}
+**Client First Name:** {{first_name}}
+**Client Last Name:** {{last_name}}
 **Signature:** {{signature}}
 `,
-    fields: { full_name: "", signature: "" },
+    fields: {
+      last_name: "string",
+      first_name: "string",
+      signature: "string",
+    },
     created_dt: "2024-01-01T00:00:00Z",
     updated_dt: "2024-01-01T00:00:00Z",
   },
@@ -212,10 +232,15 @@ Any breach may result in legal action.
 
 ---
 
-**Client Name:** {{full_name}}
+**Client First Name:** {{first_name}}
+**Client Last Name:** {{last_name}}
 **Signature:** {{signature}}
 `,
-    fields: { full_name: "", signature: "" },
+    fields: {
+      last_name: "string",
+      first_name: "string",
+      signature: "string",
+    },
     created_dt: "2024-01-01T00:00:00Z",
     updated_dt: "2024-01-01T00:00:00Z",
   },

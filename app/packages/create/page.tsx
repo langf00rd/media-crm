@@ -2,13 +2,7 @@
 
 import Main from "@/components/main";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -19,8 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { getContracts } from "@/lib/supabase/queries";
-import { createPackage } from "@/lib/supabase/queries";
+import { createPackage, getContracts } from "@/lib/supabase/queries";
 import type { Contract } from "@/lib/types";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -58,7 +51,17 @@ export default function CreatePackagePage() {
   };
 
   return (
-    <Main showBackButton>
+    <Main
+      showBackButton
+      slotRight={
+        <div className="space-x-2">
+          <Button onClick={handleSave}>
+            {saved ? <Check size={16} /> : null}
+            {saved ? "Saved!" : "Save Package"}
+          </Button>
+        </div>
+      }
+    >
       <Card>
         <CardHeader>
           <CardTitle>Create New Package</CardTitle>
@@ -70,7 +73,9 @@ export default function CreatePackagePage() {
               <Input
                 type="text"
                 value={packageForm.name}
-                onChange={(e) => setPackageForm({ ...packageForm, name: e.target.value })}
+                onChange={(e) =>
+                  setPackageForm({ ...packageForm, name: e.target.value })
+                }
                 placeholder="e.g., Premium Wedding Package"
               />
             </div>
@@ -79,7 +84,12 @@ export default function CreatePackagePage() {
               <Label>Description</Label>
               <Textarea
                 value={packageForm.description}
-                onChange={(e) => setPackageForm({ ...packageForm, description: e.target.value })}
+                onChange={(e) =>
+                  setPackageForm({
+                    ...packageForm,
+                    description: e.target.value,
+                  })
+                }
                 placeholder="Describe what this package includes"
                 rows={3}
               />
@@ -91,7 +101,9 @@ export default function CreatePackagePage() {
                 <Input
                   type="number"
                   value={packageForm.price}
-                  onChange={(e) => setPackageForm({ ...packageForm, price: e.target.value })}
+                  onChange={(e) =>
+                    setPackageForm({ ...packageForm, price: e.target.value })
+                  }
                   placeholder="0.00"
                 />
               </div>
@@ -101,7 +113,12 @@ export default function CreatePackagePage() {
                 <Input
                   type="number"
                   value={packageForm.deposit_percentage}
-                  onChange={(e) => setPackageForm({ ...packageForm, deposit_percentage: e.target.value })}
+                  onChange={(e) =>
+                    setPackageForm({
+                      ...packageForm,
+                      deposit_percentage: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
@@ -111,7 +128,8 @@ export default function CreatePackagePage() {
               <Select
                 value={packageForm.contract_id}
                 onValueChange={(value) => {
-                  if (value) setPackageForm({ ...packageForm, contract_id: value });
+                  if (value)
+                    setPackageForm({ ...packageForm, contract_id: value });
                 }}
               >
                 <SelectTrigger className="w-full">
@@ -131,22 +149,15 @@ export default function CreatePackagePage() {
               <Label>Features (one per line)</Label>
               <Textarea
                 value={packageForm.features}
-                onChange={(e) => setPackageForm({ ...packageForm, features: e.target.value })}
+                onChange={(e) =>
+                  setPackageForm({ ...packageForm, features: e.target.value })
+                }
                 placeholder="8 hours coverage&#10;500+ photos&#10;Digital album"
                 rows={4}
               />
             </div>
           </form>
         </CardContent>
-        <CardFooter>
-          <Button onClick={handleSave}>
-            {saved ? <Check size={16} /> : null}
-            {saved ? "Saved!" : "Save Package"}
-          </Button>
-          <Button variant="outline" onClick={() => window.history.back()}>
-            Cancel
-          </Button>
-        </CardFooter>
       </Card>
     </Main>
   );

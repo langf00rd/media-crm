@@ -1,6 +1,7 @@
 "use client";
 
 import { BOOKING_STEPS } from "@/lib/content";
+import { createRequest } from "@/lib/supabase/queries";
 import type { Contract, Package } from "@/lib/types";
 import {
   createContext,
@@ -12,10 +13,7 @@ import {
 
 export type BookingStep = (typeof BOOKING_STEPS)[number]["step"];
 
-export interface FormData {
-  full_name: string;
-  signature: string;
-}
+export type FormData = Record<string, string>;
 
 interface BookingState {
   step: BookingStep;
@@ -42,18 +40,17 @@ export function BookingProvider({
   children,
   packages,
   contracts,
+  organizationId,
 }: {
   children: ReactNode;
   packages: Package[];
   contracts: Contract[];
+  organizationId: string;
 }) {
   const [step, setStep] = useState<BookingStep>("packages");
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [contract, setContract] = useState<Contract | null>(null);
-  const [formData, setFormData] = useState<FormData>({
-    full_name: "",
-    signature: "",
-  });
+  const [formData, setFormData] = useState<FormData>({});
 
   const deposit = selectedPackage
     ? Math.round(selectedPackage.price * selectedPackage.deposit_percentage) /
@@ -67,19 +64,45 @@ export function BookingProvider({
       const id = pkg.contract_id || "";
       const found = contracts.find((c) => c.id === id) || null;
       setContract(found);
-      setFormData({ full_name: "", signature: "" });
+      if (found) {
+        const initial: FormData = {};
+        Object.keys(found.fields).forEach((key) => {
+          initial[key] = "";
+        });
+        setFormData(initial);
+      } else {
+        setFormData({});
+      }
       setStep("contract");
     },
     [contracts],
   );
 
   const updateFormData = useCallback((data: Partial<FormData>) => {
-    setFormData((prev) => ({ ...prev, ...data }));
+    setFormData((prev) => {
+      const next: FormData = { ...prev };
+      for (const key in data) {
+        const val = data[key];
+        if (val !== undefined) next[key] = val;
+      }
+      return next;
+    });
   }, []);
 
-  const acceptContract = useCallback(() => {
+  const acceptContract = useCallback(async () => {
+    if (!selectedPackage) return;
+
+    await createRequest({
+      first_name: formData.first_name || "",
+      last_name: formData.last_name || "",
+      signature: formData.signature || "",
+      package_id: selectedPackage.id,
+      organization_id: organizationId,
+      terms_accepted: true,
+    });
+
     setStep("payment");
-  }, []);
+  }, [selectedPackage, formData, organizationId]);
 
   const processPayment = useCallback(() => {
     setStep("success");
@@ -90,6 +113,7 @@ export function BookingProvider({
       case "contract":
         setSelectedPackage(null);
         setContract(null);
+        setFormData({});
         setStep("packages");
         break;
       case "payment":
@@ -98,7 +122,7 @@ export function BookingProvider({
       case "success":
         setSelectedPackage(null);
         setContract(null);
-        setFormData({ full_name: "", signature: "" });
+        setFormData({});
         setStep("packages");
         break;
     }
@@ -107,7 +131,7 @@ export function BookingProvider({
   const reset = useCallback(() => {
     setSelectedPackage(null);
     setContract(null);
-    setFormData({ full_name: "", signature: "" });
+    setFormData({});
     setStep("packages");
   }, []);
 

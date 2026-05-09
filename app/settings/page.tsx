@@ -6,16 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { getCurrentOrganization, updateOrganization } from "@/lib/supabase/queries";
-import type { Organization } from "@/lib/types";
+import { useUser } from "@/hooks/use-user";
+import { updateOrganization } from "@/lib/supabase/queries";
 import { Check, Mail, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function SettingsPage() {
-  const [org, setOrg] = useState<Organization | null>(null);
+  const { org, refresh } = useUser();
   const [autoReminders, setAutoReminders] = useState(true);
   const [saved, setSaved] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -25,19 +24,16 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    getCurrentOrganization().then((o) => {
-      if (o) {
-        setOrg(o);
-        setFormData({
-          name: o.name,
-          category: o.category,
-          email: o.email || "",
-          phone: o.phone || "",
-          reminderDays: "7",
-        });
-      }
-    }).finally(() => setLoading(false));
-  }, []);
+    if (org) {
+      setFormData({
+        name: org.name,
+        category: org.category,
+        email: org.email || "",
+        phone: org.phone || "",
+        reminderDays: "7",
+      });
+    }
+  }, [org]);
 
   const handleSave = async () => {
     if (!org) return;
@@ -47,11 +43,12 @@ export default function SettingsPage() {
       email: formData.email,
       phone: formData.phone,
     });
+    await refresh();
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  if (!org) return <div className="p-6">Loading...</div>;
 
   return (
     <Main
@@ -74,7 +71,9 @@ export default function SettingsPage() {
               <Input
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
               />
             </div>
 
@@ -83,7 +82,9 @@ export default function SettingsPage() {
               <Input
                 type="text"
                 value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
               />
             </div>
 
@@ -96,7 +97,9 @@ export default function SettingsPage() {
                 <Input
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                 />
               </div>
 
@@ -108,7 +111,9 @@ export default function SettingsPage() {
                 <Input
                   type="tel"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -117,15 +122,24 @@ export default function SettingsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">Payment Reminders</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              Payment Reminders
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-foreground">Auto-send reminders</p>
-                <p className="text-sm text-text-secondary">Automatically remind clients before due dates</p>
+                <p className="font-medium text-foreground">
+                  Auto-send reminders
+                </p>
+                <p className="text-sm text-text-secondary">
+                  Automatically remind clients before due dates
+                </p>
               </div>
-              <Switch checked={autoReminders} onCheckedChange={setAutoReminders} />
+              <Switch
+                checked={autoReminders}
+                onCheckedChange={setAutoReminders}
+              />
             </div>
 
             <div className="space-y-2">
@@ -133,7 +147,9 @@ export default function SettingsPage() {
               <Input
                 type="number"
                 value={formData.reminderDays}
-                onChange={(e) => setFormData({ ...formData, reminderDays: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, reminderDays: e.target.value })
+                }
               />
             </div>
           </CardContent>
@@ -141,12 +157,14 @@ export default function SettingsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">Booking Link</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              Booking Link
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="bg-gray-50 rounded-input p-3 flex items-center gap-2">
               <code className="flex-1 text-primary font-mono text-sm break-all">
-                {`${process.env.NEXT_PUBLIC_APP_URL || "app.com"}/book/${org?.slug || "sarah-captures"}`}
+                {`${window.location.origin}/book/${org?.slug || ""}`}
               </code>
             </div>
             <p className="text-sm text-text-secondary">

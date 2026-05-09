@@ -9,27 +9,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { deletePackage, getPackages } from "@/lib/supabase/queries";
+import { useUser } from "@/hooks/use-user";
+import { getPackages } from "@/lib/supabase/queries";
 import type { Package } from "@/lib/types";
 import { Check, EyeIcon, Plus } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function PackagesPage() {
+  const { org } = useUser();
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchPackages = () => {
     setLoading(true);
-    getPackages().then(setPackages).finally(() => setLoading(false));
+    getPackages()
+      .then(setPackages)
+      .finally(() => setLoading(false));
   };
 
   useEffect(fetchPackages, []);
-
-  const handleDelete = async (id: string) => {
-    await deletePackage(id);
-    fetchPackages();
-  };
 
   return (
     <Main
@@ -42,7 +41,7 @@ export default function PackagesPage() {
               New Package
             </Button>
           </Link>
-          <Link href="/book/sarah-captures">
+          <Link href={`/book/${org?.slug || ""}`}>
             <Button variant="outline">
               <EyeIcon className="opacity-50" />
               Preview
@@ -58,34 +57,34 @@ export default function PackagesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {packages.map((pkg) => (
-            <Card key={pkg.id}>
-              <CardHeader>
-                <CardTitle>{pkg.name}</CardTitle>
-                <CardDescription>{pkg.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <p className="text-3xl font-medium text-primary">${pkg.price}</p>
-                <div className="space-y-2">
-                  <p>What you get:</p>
-                  <ul className="space-y-2">
-                    {pkg.features.map((item, idx) => (
-                      <li key={idx} className="flex items-center gap-1">
-                        <Check size={16} strokeWidth={2} className="bg-green-200 text-green-700 rounded-full p-[2px]" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </CardContent>
-              <div className="px-6 pb-6 flex gap-2">
-                <Link href={`/packages/edit/${pkg.id}`}>
-                  <Button variant="outline">Edit</Button>
-                </Link>
-                <Button variant="destructive" onClick={() => handleDelete(pkg.id)}>
-                  Delete
-                </Button>
-              </div>
-            </Card>
+            <Link href={`/packages/edit/${pkg.id}`} key={pkg.id}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{pkg.name}</CardTitle>
+                  <CardDescription>{pkg.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <p className="text-3xl font-medium text-primary">
+                    ${pkg.price}
+                  </p>
+                  <div className="space-y-2">
+                    <p>What you get:</p>
+                    <ul className="space-y-2">
+                      {pkg.features.map((item, idx) => (
+                        <li key={idx} className="flex items-center gap-1">
+                          <Check
+                            size={16}
+                            strokeWidth={2}
+                            className="bg-green-200 text-green-700 rounded-full p-[2px]"
+                          />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       )}

@@ -10,9 +10,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 import { BookingProvider, useBooking } from "@/contexts/booking-context";
 import { BOOKING_STEPS } from "@/lib/content";
-import { getContracts, getOrganizationBySlug, getPackagesByOrg } from "@/lib/supabase/queries";
+import {
+  getContracts,
+  getOrganizationBySlug,
+  getPackagesByOrg,
+} from "@/lib/supabase/queries";
 import type { Contract, Package } from "@/lib/types";
 import { Check, CreditCard } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -212,7 +217,7 @@ function SuccessView() {
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Client</span>
-            <span className="font-medium">{formData.full_name}</span>
+            <span className="font-medium">{`${formData.first_name || ""} ${formData.last_name || ""}`}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Amount paid</span>
@@ -250,7 +255,6 @@ function StepTitle() {
 }
 
 function BookingInner() {
-  const { step, goBack } = useBooking();
   return (
     <div className="w-screen h-screen bg-white md:bg-background flex items-center p-5">
       <div className="w-full space-y-4">
@@ -268,6 +272,7 @@ export default function BookPage() {
   const params = useParams<{ providerId: string }>();
   const [packages, setPackages] = useState<Package[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
+  const [orgId, setOrgId] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -279,6 +284,7 @@ export default function BookPage() {
         setLoading(false);
         return;
       }
+      setOrgId(org.id);
       const [pkgs, ctracts] = await Promise.all([
         getPackagesByOrg(org.id),
         getContracts(),
@@ -289,12 +295,21 @@ export default function BookPage() {
     })();
   }, [params.providerId]);
 
-  if (loading) return <div className="p-6">Loading...</div>;
   if (error) return <div className="p-6">{error}</div>;
 
   return (
-    <BookingProvider packages={packages} contracts={contracts}>
-      <BookingInner />
+    <BookingProvider
+      packages={packages}
+      contracts={contracts}
+      organizationId={orgId}
+    >
+      {loading ? (
+        <div className="w-full h-screen flex items-center justify-center">
+          <Spinner />
+        </div>
+      ) : (
+        <BookingInner />
+      )}
     </BookingProvider>
   );
 }

@@ -5,25 +5,6 @@ import type { Contract, Organization, Package, Request } from "@/lib/types";
 // Helpers
 // ------------------------------------------------------------------
 
-const ORG_SLUG = "sarah-captures";
-
-let _orgId: string | null = null;
-
-async function ensureOrgId(): Promise<string> {
-  if (_orgId) return _orgId;
-  const { data } = await supabase
-    .from("organizations")
-    .select("id")
-    .eq("slug", ORG_SLUG)
-    .single();
-  _orgId = data?.id ?? null;
-  return _orgId!;
-}
-
-export function resetOrgCache() {
-  _orgId = null;
-}
-
 function mapRow<T>(row: Record<string, unknown>): T {
   return row as unknown as T;
 }
@@ -43,8 +24,40 @@ export async function getOrganizationBySlug(
   return data ? mapRow<Organization>(data) : null;
 }
 
-export async function getCurrentOrganization(): Promise<Organization | null> {
-  return getOrganizationBySlug(ORG_SLUG);
+export async function getOrganizationById(
+  id: string,
+): Promise<Organization | null> {
+  const { data } = await supabase
+    .from("organizations")
+    .select("*")
+    .eq("id", id)
+    .single();
+  return data ? mapRow<Organization>(data) : null;
+}
+
+export async function hasOrganization(): Promise<boolean> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return false;
+  const { data } = await supabase
+    .from("organizations")
+    .select("id")
+    .eq("id", user.id)
+    .maybeSingle();
+  return !!data;
+}
+
+export async function createOrganization(
+  input: Pick<Organization, "name" | "slug" | "category" | "phone" | "email">,
+): Promise<{ data: Organization | null; error: Error | null }> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { data: null, error: new Error("Not authenticated") };
+  const { data, error } = await supabase
+    .from("organizations")
+    .insert({ id: user.id, ...input })
+    .select()
+    .single();
+  if (error) return { data: null, error: new Error(error.message) };
+  return { data: data ? mapRow<Organization>(data) : null, error: null };
 }
 
 export async function updateOrganization(
@@ -74,10 +87,11 @@ export async function getPackage(id: string): Promise<Package | null> {
 export async function createPackage(
   input: Omit<Package, "id" | "created_dt" | "updated_dt">,
 ): Promise<Package | null> {
-  const orgId = await ensureOrgId();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
   const { data } = await supabase
     .from("packages")
-    .insert({ ...input, organization_id: orgId })
+    .insert({ ...input, organization_id: user.id })
     .select()
     .single();
   return data ? mapRow<Package>(data) : null;

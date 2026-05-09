@@ -1,12 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { getCurrentOrganization } from "@/lib/supabase/queries";
-import type { Organization } from "@/lib/types";
+import { useUser } from "@/hooks/use-user";
 import { Calendar, File, Home, LogOut, Package, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -18,11 +16,7 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const [org, setOrg] = useState<Organization | null>(null);
-
-  useEffect(() => {
-    getCurrentOrganization().then(setOrg);
-  }, []);
+  const { org } = useUser();
 
   return (
     <>

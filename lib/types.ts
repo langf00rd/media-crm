@@ -43,8 +43,5 @@ export interface Contract {
   content: string;
   created_dt: string;
   updated_dt: string;
-  fields: {
-    full_name: string;
-    signature: string;
-  };
+  fields: Record<string, string>;
 }

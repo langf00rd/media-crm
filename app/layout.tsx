@@ -1,5 +1,6 @@
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
+import { UserProvider } from "@/hooks/use-user";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -33,9 +34,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/*<Sidebar />*/}
-        {/*<div className="md:ml-60 mb-20 md:mb-8">{children}</div>*/}
-        {children}
+        <UserProvider>
+          {children}
+        </UserProvider>
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>
