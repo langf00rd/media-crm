@@ -20,25 +20,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { mockPackages } from "@/lib/data";
-import { Check, Copy, EyeIcon, Plus, Trash2 } from "lucide-react";
+import { Check, EyeIcon, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function PricingPage() {
-  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const handleCopyLink = async (pkgId: string) => {
-    const url = `${process.env.NEXT_PUBLIC_APP_URL || "app.com"}/book/${pkgId}`;
-    await navigator.clipboard.writeText(url);
-    setCopiedId(pkgId);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
   const handleDelete = () => {
-    setDeleted(true);
     setDeleteId(null);
-    setTimeout(() => setDeleted(false), 2000);
   };
 
   return (
@@ -66,14 +56,10 @@ export default function PricingPage() {
           <Card key={pkg.id}>
             <CardHeader>
               <CardTitle>{pkg.name}</CardTitle>
-              <p className="text-text-secondary text-sm">{pkg.serviceType}</p>
+              <p className="text-text-secondary text-sm">{pkg.description}</p>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <p className="text-text-secondary text-sm">Starting at</p>
-                <p className="text-3xl font-bold text-primary">${pkg.price}</p>
-              </div>
-              <p className="text-foreground">{pkg.description}</p>
+              <p className="text-3xl font-bold text-primary">${pkg.price}</p>
               <div>
                 <p className="text-sm font-semibold text-foreground mb-2">
                   Includes:
@@ -89,23 +75,6 @@ export default function PricingPage() {
                     </li>
                   ))}
                 </ul>
-              </div>
-
-              <div className="bg-neutral-50 border rounded-input px-3 rounded-md flex items-center gap-2">
-                <code className="flex-1 text-primary font-mono text-xs break-all">
-                  {`${process.env.NEXT_PUBLIC_APP_URL || "app.com"}/book/${pkg.id}`}
-                </code>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleCopyLink(pkg.id)}
-                >
-                  {copiedId === pkg.id ? (
-                    <Check size={16} className="text-success" />
-                  ) : (
-                    <Copy size={16} />
-                  )}
-                </Button>
               </div>
             </CardContent>
 

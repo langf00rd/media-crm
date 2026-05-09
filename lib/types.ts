@@ -42,9 +42,11 @@ export interface Contract {
   id: string;
   title: string;
   description: string;
+  excerpt?: string;
   content: string;
   fields: {
     full_name: string;
     signature: string;
   };
+  status?: string;
 }
