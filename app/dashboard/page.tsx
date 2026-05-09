@@ -43,19 +43,19 @@ export default function DashboardPage() {
           label="Active Jobs"
           value={activeJobs.length}
           color="primary"
-          href="/jobs"
+          href="/activity"
         />
         <StatCard
           label="Pending Payments"
           value={pendingPayments.length}
           color="warning"
-          href="/jobs"
+          href="/activity"
         />
         <StatCard
           label="Completed"
           value={completedJobs.length}
           color="success"
-          href="/jobs?filter=completed"
+          href="/activity?filter=completed"
         />
         <StatCard
           label="Pending Contracts"

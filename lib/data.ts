@@ -88,7 +88,6 @@ export const mockPackages: Package[] = [
   {
     id: "pkg-001",
     name: "Premium Wedding",
-    serviceType: "Wedding Photography",
     description: "Full-day coverage with album and prints",
     price: 2500,
     depositPercentage: 25,
@@ -103,7 +102,6 @@ export const mockPackages: Package[] = [
   {
     id: "pkg-002",
     name: "Standard Corporate",
-    serviceType: "Corporate Event",
     description: "Half-day event coverage",
     price: 1200,
     depositPercentage: 25,

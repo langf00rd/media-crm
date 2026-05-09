@@ -30,7 +30,6 @@ export interface Job {
 export interface Package {
   id: string;
   name: string;
-  serviceType: string;
   description: string;
   price: number;
   depositPercentage: number;

@@ -2,11 +2,10 @@
 
 import {
   ArrowLeft,
-  Calendar,
+  CalendarIcon,
   FileIcon,
-  Heart,
   Package,
-  Settings,
+  Settings2,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -49,7 +48,12 @@ export default function Main(props: {
                 ))}
               </div>
             )}
-            <div className="h-[60px] flex items-center">{props.slotRight}</div>
+            <div className="h-[60px] md:flex items-center hidden">
+              {props.slotRight}
+            </div>
+            <div className="fixed bottom-0 right-0 p-5 pb-3">
+              {props.slotRight}
+            </div>
           </div>
         </div>
       </div>
@@ -61,9 +65,9 @@ export default function Main(props: {
 }
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: Heart },
-  { href: "/jobs", label: "Jobs", icon: Calendar },
-  { href: "/pricing", label: "Packages", icon: Package },
+  { href: "/activity", label: "Activity", icon: CalendarIcon },
+  { href: "/packages", label: "Packages", icon: Package },
   { href: "/contracts", label: "Contracts", icon: FileIcon },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/settings", label: "Settings", icon: Settings2 },
+  // { href: "/dashboard", label: "Dashboard", icon: Heart },
 ];

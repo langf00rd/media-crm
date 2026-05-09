@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -62,7 +61,6 @@ function PackageSelection() {
         >
           <CardHeader>
             <CardTitle>{pkg.name}</CardTitle>
-            <CardDescription>{pkg.serviceType}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-3xl font-bold text-primary">${pkg.price}</p>
@@ -156,7 +154,6 @@ function PaymentView() {
     <Card>
       <CardHeader>
         <CardTitle>{selectedPackage.name}</CardTitle>
-        <CardDescription>{selectedPackage.serviceType}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex justify-between">
@@ -253,7 +250,7 @@ export default function BookPage() {
   useParams<{ providerId: string }>();
   return (
     <BookingProvider>
-      <div className="w-screen h-screen flex items-center">
+      <div className="w-screen h-screen flex items-center p-5">
         <div className="w-full space-y-4">
           <StepIndicator />
           <div className="max-w-[650px] bg-white border rounded-4xl shadow-xl space-y-5 mx-auto p-5">

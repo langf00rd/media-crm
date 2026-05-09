@@ -170,3 +170,11 @@
 .prose p {
   @apply mb-6;
 }
+
+form {
+  @apply space-y-6;
+}
+
+fieldset {
+  @apply space-y-2;
+}

@@ -15,9 +15,6 @@ export default function ContractsPage() {
           className="bg-white max-w-sm border border-neutral-200"
         />
       </div>
-      {/*<small className="text-neutral-500 font-medium block">
-          {mockContracts.length} contract templates
-        </small>*/}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {mockContracts.map((a) => (
           <Link key={a.id} href={`/contracts/${a.id}`}>

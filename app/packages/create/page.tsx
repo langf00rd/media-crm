@@ -19,16 +19,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { mockContracts } from "@/lib/data";
 import { Check } from "lucide-react";
 import { useState } from "react";
 
 export default function CreatePackagePage() {
   const [packageForm, setPackageForm] = useState({
     name: "",
-    serviceType: "",
     description: "",
     price: "",
     depositPercentage: "25",
+    contractId: "",
     inclusions: "",
   });
   const [saved, setSaved] = useState(false);
@@ -37,7 +38,7 @@ export default function CreatePackagePage() {
     setSaved(true);
     setTimeout(() => {
       setSaved(false);
-      window.location.href = "/pricing";
+      window.location.href = "/packages";
     }, 1500);
   };
 
@@ -59,35 +60,6 @@ export default function CreatePackagePage() {
                 }
                 placeholder="e.g., Premium Wedding Package"
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Service Type</Label>
-              <Select
-                value={packageForm.serviceType}
-                onValueChange={(value) => {
-                  if (value)
-                    setPackageForm({ ...packageForm, serviceType: value });
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a service type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Wedding Photography">
-                    Wedding Photography
-                  </SelectItem>
-                  <SelectItem value="Corporate Event">
-                    Corporate Event
-                  </SelectItem>
-                  <SelectItem value="Portrait Session">
-                    Portrait Session
-                  </SelectItem>
-                  <SelectItem value="Product Photography">
-                    Product Photography
-                  </SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             <div className="space-y-2">
@@ -129,6 +101,28 @@ export default function CreatePackagePage() {
                   })
                 }
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Linked Contract</Label>
+              <Select
+                value={packageForm.contractId}
+                onValueChange={(value) => {
+                  if (value)
+                    setPackageForm({ ...packageForm, contractId: value });
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a contract" />
+                </SelectTrigger>
+                <SelectContent>
+                  {mockContracts.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">

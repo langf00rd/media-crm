@@ -11,6 +11,8 @@ import { Check, Mail, Phone } from "lucide-react";
 import { useState } from "react";
 
 export default function SettingsPage() {
+  const [autoReminders, setAutoReminders] = useState(true);
+  const [saved, setSaved] = useState(false);
   const [formData, setFormData] = useState({
     businessName: mockProvider.businessName,
     serviceCategory: mockProvider.serviceCategory,
@@ -18,10 +20,6 @@ export default function SettingsPage() {
     phone: mockProvider.phone,
     reminderDays: "7",
   });
-  const [emailNotifs, setEmailNotifs] = useState(true);
-  const [smsNotifs, setSmsNotifs] = useState(false);
-  const [autoReminders, setAutoReminders] = useState(true);
-  const [saved, setSaved] = useState(false);
 
   const handleSave = () => {
     setSaved(true);
@@ -30,7 +28,7 @@ export default function SettingsPage() {
 
   return (
     <Main
-      title="Settings"
+      title="Account settings"
       slotRight={
         <Button onClick={handleSave}>
           {saved ? <Check size={16} /> : null}
@@ -94,37 +92,6 @@ export default function SettingsPage() {
                   }
                 />
               </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              Notifications
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-foreground">
-                  Email Notifications
-                </p>
-                <p className="text-sm text-text-secondary">
-                  Receive booking updates via email
-                </p>
-              </div>
-              <Switch checked={emailNotifs} onCheckedChange={setEmailNotifs} />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-foreground">SMS Notifications</p>
-                <p className="text-sm text-text-secondary">
-                  Receive booking updates via text
-                </p>
-              </div>
-              <Switch checked={smsNotifs} onCheckedChange={setSmsNotifs} />
             </div>
           </CardContent>
         </Card>

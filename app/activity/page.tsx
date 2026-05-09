@@ -45,7 +45,7 @@ function JobsContent() {
   };
 
   return (
-    <Main title="All jobs">
+    <Main title="Activities">
       <div className="flex gap-2">
         {(["all", "active", "completed", "cancelled"] as const).map(
           (filter) => (
