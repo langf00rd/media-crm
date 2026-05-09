@@ -110,7 +110,7 @@ function ContractView() {
 
   return (
     <div>
-      <div className="prose prose-sm p-5 bg-background h-[50vh] overflow-y-scroll mb-6 max-w-none">
+      <div className="prose prose-sm p-5 rounded-2xl border bg-background h-[50vh] overflow-y-scroll mb-6 max-w-none">
         <ReactMarkdown>{renderedContent}</ReactMarkdown>
       </div>
 
