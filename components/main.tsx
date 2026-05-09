@@ -27,7 +27,7 @@ export default function Main(props: {
           )}
           <div className="flex items-center justify-between">
             {props.showBackButton && (
-              <div className="h-[40px] flex items-center">
+              <div className="h-[52px] flex items-center">
                 <Button variant="ghost" onClick={() => window.history.back()}>
                   <ArrowLeft />
                   Back
@@ -40,7 +40,7 @@ export default function Main(props: {
                   <Link
                     key={a.href}
                     href={a.href}
-                    className={`flex h-[40px] items-center gap-1 border-b-2 ${pathname === a.href ? "border-b-primary text-primary" : "text-neutral-500 border-b-transparent"}`}
+                    className={`flex h-[52px] items-center gap-1 border-b-2 ${pathname === a.href ? "border-b-primary text-primary" : "text-neutral-500 border-b-transparent"}`}
                   >
                     {/*<a.icon size={16} className="opacity-30" />*/}
                     <span className="text-sm font-medium">{a.label}</span>
@@ -48,7 +48,7 @@ export default function Main(props: {
                 ))}
               </div>
             )}
-            <div className="h-[40px] md:flex items-center hidden">
+            <div className="h-[52px] md:flex items-center hidden">
               {props.slotRight}
             </div>
             <div className="fixed bottom-0 right-0 p-5 pb-3 md:hidden">
