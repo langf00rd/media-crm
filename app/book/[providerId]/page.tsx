@@ -56,7 +56,7 @@ function PackageSelection() {
       {packages.map((pkg) => (
         <Card
           key={pkg.id}
-          className="cursor-pointer hover:ring-2 hover:ring-primary bg-background transition-shadow"
+          className="cursor-pointer rounded-[10px] hover:ring-2 hover:ring-primary bg-background transition-shadow"
           onClick={() => selectPackage(pkg)}
         >
           <CardHeader>
@@ -252,9 +252,9 @@ export default function BookPage() {
     <BookingProvider>
       <div className="w-screen h-screen flex items-center p-5">
         <div className="w-full space-y-4">
+          <StepTitle />
           <StepIndicator />
-          <div className="max-w-[650px] bg-white border rounded-4xl shadow-xl space-y-5 mx-auto p-5">
-            <StepTitle />
+          <div className="max-w-[650px] bg-white border rounded-4xl shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
             <BookingStepContent />
           </div>
         </div>
