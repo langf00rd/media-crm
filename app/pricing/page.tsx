@@ -52,10 +52,12 @@ export default function PricingPage() {
               New Package
             </Button>
           </Link>
-          <Button variant="outline">
-            <EyeIcon className="opacity-50" />
-            Preview
-          </Button>
+          <Link href="/book/sarah-captures">
+            <Button variant="outline">
+              <EyeIcon className="opacity-50" />
+              Preview
+            </Button>
+          </Link>
         </div>
       }
     >

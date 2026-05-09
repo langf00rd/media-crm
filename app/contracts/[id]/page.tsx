@@ -24,8 +24,10 @@ export default function ContractDetailPage() {
         </div>
       }
     >
-      <div className="prose prose-sm bg-white p-5 rounded-2xl border shadow-2xs max-w-[600px] mx-auto">
-        <ReactMarkdown>{contract?.content}</ReactMarkdown>
+      <div className="prose prose-sm bg-white p-5 border shadow-2xs max-w-[600px] mx-auto">
+        <div className="prose prose-sm max-w-none">
+          <ReactMarkdown>{contract?.content}</ReactMarkdown>
+        </div>
       </div>
     </Main>
   );

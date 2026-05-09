@@ -35,6 +35,7 @@ export interface Package {
   price: number;
   depositPercentage: number;
   inclusions: string[];
+  contractId?: string;
 }
 
 export interface Contract {

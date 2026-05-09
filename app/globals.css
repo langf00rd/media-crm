@@ -10,7 +10,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: #004234;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -37,18 +37,18 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --background: #f3f5f7;
+  --background: #f5f5f2;
   --foreground: oklch(0.145 0 0);
 }
 
 .dark {
-  --background: #f3f5f7;
+  --background: #f5f5f2;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
+  --primary: #004234;
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -141,6 +141,32 @@
   }
 }
 
+.prose {
+  @apply leading-[32px];
+}
+
 .prose p {
-  @apply leading-[32px] text-neutral-700;
+  @apply text-neutral-600;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  @apply mb-2 border-t pt-2;
+}
+
+.prose h1 {
+  @apply text-2xl font-semibold;
+}
+
+.prose h2 {
+  @apply text-xl font-semibold;
+}
+
+.prose h3 {
+  @apply text-lg font-semibold;
+}
+
+.prose p {
+  @apply mb-6;
 }

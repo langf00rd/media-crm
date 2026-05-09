@@ -41,7 +41,7 @@ export default function Main(props: {
                   <Link
                     key={a.href}
                     href={a.href}
-                    className={`flex h-[60px] items-center gap-2 border-b-2 ${pathname === a.href ? "border-b-primary text-primary" : "text-neutral-500 border-b-transparent"}`}
+                    className={`flex h-[60px] items-center gap-1 border-b-2 ${pathname === a.href ? "border-b-primary text-primary" : "text-neutral-500 border-b-transparent"}`}
                   >
                     <a.icon size={16} className="opacity-30" />
                     <span className="text-sm font-medium">{a.label}</span>

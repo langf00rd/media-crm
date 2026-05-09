@@ -98,6 +98,7 @@ export const mockPackages: Package[] = [
       "Digital album",
       "Print package",
     ],
+    contractId: "service_agreement",
   },
   {
     id: "pkg-002",
@@ -107,6 +108,7 @@ export const mockPackages: Package[] = [
     price: 1200,
     depositPercentage: 25,
     inclusions: ["4 hours coverage", "200+ photos", "Digital delivery"],
+    contractId: "independent_contractor",
   },
 ];
 

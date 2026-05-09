@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "./ui/card";
 
+import { DownloadIcon } from "lucide-react";
 import { Button } from "./ui/button";
 
 export default function ContractItem(props: { contract: Contract }) {
@@ -22,7 +23,10 @@ export default function ContractItem(props: { contract: Contract }) {
         </div>
       </CardContent>*/}
       <CardFooter className="gap-4">
-        <Button>Download PDF</Button>
+        <Button className="bg-primary/10 text-primary">
+          <DownloadIcon />
+          Download PDF
+        </Button>
         <Button variant="outline">Send</Button>
       </CardFooter>
     </Card>
