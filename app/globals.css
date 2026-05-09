@@ -146,7 +146,7 @@
 }
 
 .prose p {
-  @apply text-neutral-600;
+  @apply text-neutral-600 text-base;
 }
 
 .prose h1,

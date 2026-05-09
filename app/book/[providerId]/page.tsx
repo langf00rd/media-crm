@@ -24,14 +24,14 @@ function StepIndicator() {
       {BOOKING_STEPS.map((s, idx) => (
         <div key={s.step} className="flex items-center gap-2">
           <div
-            className={`flex items-center gap-2 ${
+            className={`flex items-center gap-2 text-sm ${
               idx <= stepIndex
                 ? "text-primary"
                 : "opacity-70 text-muted-foreground"
             }`}
           >
             <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-medium shrink-0 ${
+              className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium shrink-0 ${
                 idx < stepIndex
                   ? "bg-primary text-primary-foreground"
                   : idx === stepIndex
@@ -110,7 +110,7 @@ function ContractView() {
 
   return (
     <div>
-      <div className="prose prose-sm p-5 rounded-2xl border bg-background h-[50vh] overflow-y-scroll mb-6 max-w-none">
+      <div className="prose prose-sm p-3 md:p-5 rounded-2xl border bg-background h-[50vh] overflow-y-scroll mb-6 max-w-none">
         <ReactMarkdown>{renderedContent}</ReactMarkdown>
       </div>
 
@@ -250,11 +250,11 @@ export default function BookPage() {
   useParams<{ providerId: string }>();
   return (
     <BookingProvider>
-      <div className="w-screen h-screen flex items-center p-5">
+      <div className="w-screen h-screen bg-white md:bg-background flex items-center p-5">
         <div className="w-full space-y-4">
           <StepTitle />
           <StepIndicator />
-          <div className="max-w-[650px] bg-white border rounded-4xl shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
+          <div className="max-w-[650px] bg-white md:border rounded-4xl md:shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
             <BookingStepContent />
           </div>
         </div>
