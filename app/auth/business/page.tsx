@@ -63,7 +63,7 @@ export default function BusinessPage() {
           />
           {name && (
             <small className="font-medium ml-4 text-muted-foreground">
-              {`${window.location.origin}/book/${slug}`}
+              {`${window.location.origin}/${slug}`}
             </small>
           )}
         </div>

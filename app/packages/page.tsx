@@ -47,7 +47,7 @@ export default function PackagesPage() {
             variant="outline"
             onClick={() => {
               navigator.clipboard.writeText(
-                `${window.location.origin}/book/${org?.slug || ""}`,
+                `${window.location.origin}/${org?.slug || ""}`,
               );
               setCopied(true);
               setTimeout(() => setCopied(false), 2000);
@@ -55,7 +55,7 @@ export default function PackagesPage() {
           >
             <CopyIcon className="opacity-50" />
           </Button>
-          <Link href={`/book/${org?.slug || ""}`}>
+          <Link href={`/${org?.slug || ""}`}>
             <Button variant="outline">
               <EyeIcon className="opacity-50" />
             </Button>

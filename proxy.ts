@@ -2,15 +2,41 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const publicPaths = ["/auth/sign-in", "/auth/sign-up", "/auth/business", "/book", "/"];
+const protectedRoutes = ["/activity", "/dashboard", "/packages", "/contracts", "/settings"];
 
 function isPublicPath(pathname: string) {
-  return publicPaths.some(
-    (p) => pathname === p || pathname.startsWith(p + "/"),
-  );
+  if (publicPaths.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
+    return true;
+  }
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments.length === 1 && !protectedRoutes.includes("/" + segments[0])) {
+    return true;
+  }
+  return false;
 }
 
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  let { pathname } = request.nextUrl;
+  const url = request.nextUrl.clone();
+
+  // Subdomain rewrite: <slug>.site.com -> site.com/<slug>
+  const hostname = request.headers.get("host") || "";
+  const subdomain = hostname.split(".")[0];
+  if (
+    subdomain &&
+    subdomain !== "www" &&
+    subdomain !== "localhost" &&
+    !hostname.startsWith("localhost") &&
+    !hostname.startsWith("127.0.0.1") &&
+    !hostname.startsWith("0.0.0.0")
+  ) {
+    url.pathname = `/${subdomain}${pathname === "/" ? "" : pathname}`;
+    pathname = url.pathname;
+    if (isPublicPath(pathname)) {
+      return NextResponse.rewrite(url);
+    }
+    return NextResponse.rewrite(url);
+  }
 
   if (isPublicPath(pathname)) {
     return NextResponse.next();
@@ -53,7 +79,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
 };

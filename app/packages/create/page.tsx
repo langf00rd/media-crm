@@ -111,7 +111,7 @@ export default function CreatePackagePage() {
                 <Select
                   value={packageForm.currency}
                   onValueChange={(value) =>
-                    setPackageForm({ ...packageForm, currency: value })
+                    value && setPackageForm({ ...packageForm, currency: value })
                   }
                 >
                   <SelectTrigger className="w-full">

@@ -25,7 +25,7 @@ export default function DashboardPage() {
     }).finally(() => setLoading(false));
   }, []);
 
-  const bookingUrl = `${process.env.NEXT_PUBLIC_APP_URL || "app.com"}/book/sarah-captures`;
+  const bookingUrl = `${process.env.NEXT_PUBLIC_APP_URL || "app.com"}/sarah-captures`;
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(bookingUrl);

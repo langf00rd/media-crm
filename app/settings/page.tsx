@@ -170,7 +170,7 @@ export default function SettingsPage() {
           <CardContent className="space-y-3">
             <div className="bg-gray-50 rounded-input p-3 flex items-center gap-2">
               <code className="flex-1 text-primary font-mono text-sm break-all">
-                {`${window.location.origin}/book/${org?.slug || ""}`}
+                {`${window.location.origin}/${org?.slug || ""}`}
               </code>
             </div>
             <p className="text-sm text-text-secondary">
