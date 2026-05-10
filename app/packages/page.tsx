@@ -12,7 +12,7 @@ import {
 import { useUser } from "@/hooks/use-user";
 import { getPackages } from "@/lib/supabase/queries";
 import type { Package } from "@/lib/types";
-import { Check, EyeIcon, Plus } from "lucide-react";
+import { Check, CopyIcon, EyeIcon, Plus } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -20,6 +20,7 @@ export default function PackagesPage() {
   const { org } = useUser();
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   const fetchPackages = () => {
     setLoading(true);
@@ -41,10 +42,21 @@ export default function PackagesPage() {
               New Package
             </Button>
           </Link>
+          <Button
+            variant="outline"
+            onClick={() => {
+              navigator.clipboard.writeText(
+                `${window.location.origin}/book/${org?.slug || ""}`,
+              );
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000);
+            }}
+          >
+            <CopyIcon className="opacity-50" />
+          </Button>
           <Link href={`/book/${org?.slug || ""}`}>
             <Button variant="outline">
               <EyeIcon className="opacity-50" />
-              Preview
             </Button>
           </Link>
         </div>

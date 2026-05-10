@@ -90,9 +90,12 @@ export async function updateOrganization(
 // ------------------------------------------------------------------
 
 export async function getPackages(): Promise<Package[]> {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.user) return [];
   const { data } = await supabase
     .from("packages")
     .select("*")
+    .eq("organization_id", session.user.id)
     .order("created_dt", { ascending: false });
   return (data ?? []).map((r) => mapRow<Package>(r));
 }
@@ -161,7 +164,12 @@ export async function getContract(id: string): Promise<Contract | null> {
 export async function getRequests(
   statusFilter?: string,
 ): Promise<RequestWithPackage[]> {
-  let query = supabase.from("requests").select("*, packages(*)");
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.user) return [];
+  let query = supabase
+    .from("requests")
+    .select("*, packages(*)")
+    .eq("organization_id", session.user.id);
   if (statusFilter && statusFilter !== "all") {
     if (statusFilter === "active") {
       query = query.in("status", ["pending", "in-progress"]);

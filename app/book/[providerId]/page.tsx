@@ -125,8 +125,33 @@ function ContractView() {
       {fields.length > 0 && (
         <form className="space-y-4">
           <div className="grid md:grid-cols-2 gap-5">
-            {fields.map((field) => (
-              <div key={String(field)} className="space-y-2 w-full">
+            {["first_name", "last_name"].map((key) => {
+              const field = key as keyof typeof formData;
+              if (!fields.includes(field)) return null;
+              return (
+                <div key={key} className="space-y-2 w-full">
+                  <Label htmlFor={key}>
+                    {key
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (c) => c.toUpperCase())}
+                  </Label>
+                  <Input
+                    id={key}
+                    value={formData[field] || ""}
+                    onChange={(e) =>
+                      updateFormData({ [field]: e.target.value } as Partial<typeof formData>)
+                    }
+                    className="bg-white"
+                    placeholder={`Enter your ${key.replace(/_/g, " ")}`}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          {fields
+            .filter((f) => f !== "first_name" && f !== "last_name")
+            .map((field) => (
+              <div key={String(field)} className="space-y-2">
                 <Label htmlFor={String(field)}>
                   {String(field)
                     .replace(/_/g, " ")
@@ -145,7 +170,6 @@ function ContractView() {
                 />
               </div>
             ))}
-          </div>
           <Button disabled={!allFilled} onClick={acceptContract}>
             Accept & Continue
           </Button>

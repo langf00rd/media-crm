@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useUser } from "@/hooks/use-user";
+import { signOut } from "@/lib/supabase/auth";
 import { updateOrganization } from "@/lib/supabase/queries";
 import { Check, Mail, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -49,6 +50,11 @@ export default function SettingsPage() {
   };
 
   if (!org) return <div className="p-6">Loading...</div>;
+
+  const handleLogout = async () => {
+    await signOut();
+    window.location.href = "/auth/sign-in";
+  };
 
   return (
     <Main
@@ -170,6 +176,17 @@ export default function SettingsPage() {
             <p className="text-sm text-text-secondary">
               Share this link with clients to access your public booking page
             </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Sign Out</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" onClick={handleLogout}>
+              Logout
+            </Button>
           </CardContent>
         </Card>
       </div>
