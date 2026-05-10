@@ -21,6 +21,7 @@ import {
 import type { Contract, Package } from "@/lib/types";
 import { currencySymbol } from "@/lib/utils";
 import { Check, CreditCard } from "lucide-react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -122,12 +123,12 @@ function ContractView() {
 
   return (
     <div>
-      <div className="prose prose-sm p-3 md:p-5 rounded-2xl border bg-background h-[50vh] overflow-y-scroll mb-6 max-w-none">
+      <div className="prose prose-sm p-3 md:p-5 rounded-md border bg-background h-[50vh] overflow-y-scroll mb-6 max-w-none">
         <ReactMarkdown>{renderedContent}</ReactMarkdown>
       </div>
 
       {fields.length > 0 && (
-        <form className="space-y-4">
+        <form className="space-y-4 mx-auto py-4 max-w-md">
           <div className="grid md:grid-cols-2 gap-5">
             {["first_name", "last_name"].map((key) => {
               const field = key as keyof typeof formData;
@@ -302,13 +303,31 @@ function StepTitle() {
   ) : null;
 }
 
-function BookingInner() {
+function BookingInner({
+  orgName,
+  orgLogo,
+}: {
+  orgName: string;
+  orgLogo: string | null;
+}) {
   return (
     <div className="w-screen min-h-screen bg-white md:bg-background flex items-center p-5">
       <div className="w-full space-y-4">
+        <div className="flex mb-6 justify-center items-center gap-2">
+          {orgLogo && (
+            <Image
+              src={orgLogo}
+              alt={orgName}
+              className="border bg-white aspect-square rounded-lg object-cover"
+              width={40}
+              height={40}
+            />
+          )}
+          <p className="md:text-xl font-medium">{orgName}</p>
+        </div>
         <StepTitle />
-        <StepIndicator />
-        <div className="max-w-[800px] bg-white md:border rounded-4xl md:shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
+        {/*<StepIndicator />*/}
+        <div className="max-w-[800px] bg-white md:border rounded-2xl md:shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
           <BookingStepContent />
         </div>
       </div>
@@ -321,6 +340,8 @@ export default function BookPage() {
   const [packages, setPackages] = useState<Package[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [orgId, setOrgId] = useState("");
+  const [orgName, setOrgName] = useState("");
+  const [orgLogo, setOrgLogo] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -333,6 +354,8 @@ export default function BookPage() {
         return;
       }
       setOrgId(org.id);
+      setOrgName(org.name);
+      setOrgLogo(org.logo);
       const [pkgs, ctracts] = await Promise.all([
         getPackagesByOrg(org.id),
         getContracts(),
@@ -356,7 +379,7 @@ export default function BookPage() {
           <Spinner />
         </div>
       ) : (
-        <BookingInner />
+        <BookingInner orgName={orgName} orgLogo={orgLogo} />
       )}
     </BookingProvider>
   );

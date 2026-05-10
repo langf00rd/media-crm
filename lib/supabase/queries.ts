@@ -80,7 +80,7 @@ export async function createOrganization(
 
 export async function updateOrganization(
   id: string,
-  updates: Partial<Pick<Organization, "name" | "category" | "email" | "phone">>,
+  updates: Partial<Pick<Organization, "name" | "category" | "email" | "phone" | "logo">>,
 ): Promise<void> {
   await supabase.from("organizations").update(updates).eq("id", id);
 }
@@ -206,4 +206,41 @@ export async function createRequest(
     .select()
     .single();
   return data ? mapRow<Request>(data) : null;
+}
+
+// ------------------------------------------------------------------
+// Storage (logos)
+// ------------------------------------------------------------------
+
+const LOGOS_BUCKET = "logos";
+
+export async function uploadLogo(
+  orgId: string,
+  file: File,
+): Promise<string | null> {
+  const ext = file.name.split(".").pop() || "png";
+  const filePath = `${orgId}/logo.${ext}`;
+
+  const { error } = await supabase.storage
+    .from(LOGOS_BUCKET)
+    .upload(filePath, file, { upsert: true, cacheControl: "3600" });
+
+  if (error) return null;
+
+  const { data: { publicUrl } } = supabase.storage
+    .from(LOGOS_BUCKET)
+    .getPublicUrl(filePath);
+
+  return publicUrl;
+}
+
+export async function deleteLogo(orgId: string): Promise<void> {
+  const { data } = await supabase.storage
+    .from(LOGOS_BUCKET)
+    .list(orgId);
+
+  if (data && data.length > 0) {
+    const paths = data.map((f) => `${orgId}/${f.name}`);
+    await supabase.storage.from(LOGOS_BUCKET).remove(paths);
+  }
 }
