@@ -12,6 +12,7 @@ import {
 import { useUser } from "@/hooks/use-user";
 import { getPackages } from "@/lib/supabase/queries";
 import type { Package } from "@/lib/types";
+import { currencySymbol } from "@/lib/utils";
 import { Check, CopyIcon, EyeIcon, Plus } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -77,7 +78,7 @@ export default function PackagesPage() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <p className="text-3xl font-medium text-primary">
-                    ${pkg.price}
+                    {currencySymbol(pkg.currency)}{pkg.price}
                   </p>
                   <div className="space-y-2">
                     <p>What you get:</p>

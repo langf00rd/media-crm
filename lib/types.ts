@@ -36,6 +36,7 @@ export interface Package {
   deposit_percentage: number;
   features: string[];
   contract_id?: string;
+  currency: string;
   created_dt: string;
   updated_dt: string;
 }

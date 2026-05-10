@@ -32,9 +32,18 @@ export default function EditPackagePage() {
     name: "",
     description: "",
     price: "",
+    currency: "GHS",
     deposit_percentage: "25",
     contract_id: "",
     features: "",
+  } as {
+    name: string;
+    description: string;
+    price: string;
+    currency: string;
+    deposit_percentage: string;
+    contract_id: string;
+    features: string;
   });
   const [saved, setSaved] = useState(false);
 
@@ -48,6 +57,7 @@ export default function EditPackagePage() {
             name: p.name,
             description: p.description,
             price: p.price.toString(),
+            currency: p.currency,
             deposit_percentage: p.deposit_percentage.toString(),
             contract_id: p.contract_id || "",
             features: p.features.join("\n"),
@@ -62,6 +72,7 @@ export default function EditPackagePage() {
       name: packageForm.name,
       description: packageForm.description,
       price: Number(packageForm.price),
+      currency: packageForm.currency,
       deposit_percentage: Number(packageForm.deposit_percentage),
       features: packageForm.features.split("\n").filter(Boolean),
       contract_id: packageForm.contract_id || undefined,
@@ -110,9 +121,26 @@ export default function EditPackagePage() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label>Price ($)</Label>
+              <Label>Currency</Label>
+              <Select
+                value={packageForm.currency}
+                onValueChange={(value) =>
+                  value && setPackageForm({ ...packageForm, currency: value })
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="GHS">GHS (GH₵)</SelectItem>
+                  <SelectItem value="NGN">NGN (₦)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Price</Label>
               <Input
                 type="number"
                 value={packageForm.price}

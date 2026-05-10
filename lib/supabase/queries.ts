@@ -120,7 +120,7 @@ export async function createPackage(
 
 export async function updatePackage(
   id: string,
-  updates: Partial<Pick<Package, "name" | "description" | "price" | "deposit_percentage" | "features" | "contract_id">>,
+  updates: Partial<Pick<Package, "name" | "description" | "price" | "deposit_percentage" | "features" | "contract_id" | "currency">>,
 ): Promise<void> {
   await supabase.from("packages").update(updates).eq("id", id);
 }

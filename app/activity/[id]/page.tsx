@@ -6,6 +6,7 @@ import { ArrowLeft, CheckCircle2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getPackage, getRequest, updateRequestStatus } from "@/lib/supabase/queries";
 import type { Package, Request } from "@/lib/types";
+import { currencySymbol } from "@/lib/utils";
 
 export default function RequestDetailPage() {
   const params = useParams<{ id: string }>();
@@ -57,15 +58,15 @@ export default function RequestDetailPage() {
               <h2 className="text-xl font-bold text-foreground mb-4">Package Details</h2>
               <div className="space-y-3">
                 <InfoItem label="Package" value={pkg.name} />
-                <InfoItem label="Package Price" value={`$${pkg.price}`} />
-                <InfoItem label={`Deposit (${pkg.deposit_percentage}%)`} value={`$${Math.round((pkg.price * pkg.deposit_percentage) / 100)}`} />
+                <InfoItem label="Package Price" value={`${currencySymbol(pkg.currency)}${pkg.price}`} />
+                <InfoItem label={`Deposit (${pkg.deposit_percentage}%)`} value={`${currencySymbol(pkg.currency)}${Math.round((pkg.price * pkg.deposit_percentage) / 100)}`} />
               </div>
             </div>
 
             <div className="border-t border-gray-200 pt-6">
               <h2 className="text-xl font-bold text-foreground mb-4">Balance</h2>
               <div className="space-y-3">
-                <InfoItem label="Balance Due" value={`$${pkg.price - Math.round((pkg.price * pkg.deposit_percentage) / 100)}`} />
+                <InfoItem label="Balance Due" value={`${currencySymbol(pkg.currency)}${pkg.price - Math.round((pkg.price * pkg.deposit_percentage) / 100)}`} />
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-input">
                   <span className="text-foreground font-medium">Terms Accepted</span>
                   <span className={request.terms_accepted ? "text-success" : "text-warning"}>

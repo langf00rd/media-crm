@@ -19,6 +19,7 @@ import {
   getPackagesByOrg,
 } from "@/lib/supabase/queries";
 import type { Contract, Package } from "@/lib/types";
+import { currencySymbol } from "@/lib/utils";
 import { Check, CreditCard } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -71,7 +72,7 @@ function PackageSelection() {
             <CardTitle>{pkg.name}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-3xl font-bold text-primary">${pkg.price}</p>
+            <p className="text-3xl font-bold text-primary">{currencySymbol(pkg.currency)}{pkg.price}</p>
             <p className="text-foreground">{pkg.description}</p>
             <ul className="space-y-1">
               {pkg.features.map((item, idx) => (
@@ -190,27 +191,27 @@ function PaymentView() {
       <CardContent className="space-y-3">
         <div className="flex justify-between">
           <span>Package price</span>
-          <span className="font-medium">${selectedPackage.price}</span>
+          <span className="font-medium">{currencySymbol(selectedPackage.currency)}{selectedPackage.price}</span>
         </div>
         <div className="flex justify-between text-muted-foreground">
           <span>Deposit ({selectedPackage.deposit_percentage}%)</span>
-          <span>${deposit}</span>
+          <span>{currencySymbol(selectedPackage.currency)}{deposit}</span>
         </div>
         <div className="flex justify-between text-muted-foreground">
           <span>Balance due later</span>
-          <span>${balance}</span>
+          <span>{currencySymbol(selectedPackage.currency)}{balance}</span>
         </div>
         <div className="flex justify-between font-medium">
           <span>Total</span>
-          <span>${selectedPackage.price}</span>
+          <span>{currencySymbol(selectedPackage.currency)}{selectedPackage.price}</span>
         </div>
       </CardContent>
       <CardFooter>
         <Button onClick={processPayment}>
-          <CreditCard size={16} /> Pay ${deposit} Deposit
+          <CreditCard size={16} /> Pay {currencySymbol(selectedPackage.currency)}{deposit} Deposit
         </Button>
         <Button variant="outline" onClick={processPayment}>
-          Pay ${selectedPackage.price} in Full
+          Pay {currencySymbol(selectedPackage.currency)}{selectedPackage.price} in Full
         </Button>
       </CardFooter>
     </Card>
@@ -245,7 +246,7 @@ function SuccessView() {
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Amount paid</span>
-            <span className="font-medium">${selectedPackage.price}</span>
+            <span className="font-medium">{currencySymbol(selectedPackage.currency)}{selectedPackage.price}</span>
           </div>
         </CardContent>
       </Card>
