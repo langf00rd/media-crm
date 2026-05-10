@@ -1,7 +1,13 @@
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
+import { Mona_Sans } from "next/font/google";
 import { UserProvider } from "@/hooks/use-user";
 import "./globals.css";
+
+const monaSans = Mona_Sans({
+  subsets: ["latin"],
+  variable: "--font-mona-sans",
+});
 
 export const metadata: Metadata = {
   title: "media crm thing",
@@ -32,8 +38,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+      <html lang="en" className={monaSans.variable}>
+        <body className="font-sans">
         <UserProvider>
           {children}
         </UserProvider>

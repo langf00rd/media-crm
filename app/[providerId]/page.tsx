@@ -61,18 +61,21 @@ function StepIndicator() {
 function PackageSelection() {
   const { packages, selectPackage } = useBooking();
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
       {packages.map((pkg) => (
         <Card
           key={pkg.id}
-          className="cursor-pointer rounded-[10px] hover:ring-2 hover:ring-primary bg-background transition-shadow"
+          className="cursor-pointer min-h-[340px] rounded-[10px] hover:ring-2 hover:ring-primary bg-background transition-shadow"
           onClick={() => selectPackage(pkg)}
         >
           <CardHeader>
             <CardTitle>{pkg.name}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-3xl font-bold text-primary">{currencySymbol(pkg.currency)}{pkg.price}</p>
+          <CardContent className="space-y-4 border h-full">
+            <p className="text-3xl font-bold text-primary">
+              {currencySymbol(pkg.currency)}
+              {pkg.price}
+            </p>
             <p className="text-foreground">{pkg.description}</p>
             <ul className="space-y-1">
               {pkg.features.map((item, idx) => (
@@ -140,7 +143,9 @@ function ContractView() {
                     id={key}
                     value={formData[field] || ""}
                     onChange={(e) =>
-                      updateFormData({ [field]: e.target.value } as Partial<typeof formData>)
+                      updateFormData({ [field]: e.target.value } as Partial<
+                        typeof formData
+                      >)
                     }
                     className="bg-white"
                     placeholder={`Enter your ${key.replace(/_/g, " ")}`}
@@ -191,27 +196,42 @@ function PaymentView() {
       <CardContent className="space-y-3">
         <div className="flex justify-between">
           <span>Package price</span>
-          <span className="font-medium">{currencySymbol(selectedPackage.currency)}{selectedPackage.price}</span>
+          <span className="font-medium">
+            {currencySymbol(selectedPackage.currency)}
+            {selectedPackage.price}
+          </span>
         </div>
         <div className="flex justify-between text-muted-foreground">
           <span>Deposit ({selectedPackage.deposit_percentage}%)</span>
-          <span>{currencySymbol(selectedPackage.currency)}{deposit}</span>
+          <span>
+            {currencySymbol(selectedPackage.currency)}
+            {deposit}
+          </span>
         </div>
         <div className="flex justify-between text-muted-foreground">
           <span>Balance due later</span>
-          <span>{currencySymbol(selectedPackage.currency)}{balance}</span>
+          <span>
+            {currencySymbol(selectedPackage.currency)}
+            {balance}
+          </span>
         </div>
         <div className="flex justify-between font-medium">
           <span>Total</span>
-          <span>{currencySymbol(selectedPackage.currency)}{selectedPackage.price}</span>
+          <span>
+            {currencySymbol(selectedPackage.currency)}
+            {selectedPackage.price}
+          </span>
         </div>
       </CardContent>
       <CardFooter>
         <Button onClick={processPayment}>
-          <CreditCard size={16} /> Pay {currencySymbol(selectedPackage.currency)}{deposit} Deposit
+          <CreditCard size={16} /> Pay{" "}
+          {currencySymbol(selectedPackage.currency)}
+          {deposit} Deposit
         </Button>
         <Button variant="outline" onClick={processPayment}>
-          Pay {currencySymbol(selectedPackage.currency)}{selectedPackage.price} in Full
+          Pay {currencySymbol(selectedPackage.currency)}
+          {selectedPackage.price} in Full
         </Button>
       </CardFooter>
     </Card>
@@ -246,7 +266,10 @@ function SuccessView() {
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Amount paid</span>
-            <span className="font-medium">{currencySymbol(selectedPackage.currency)}{selectedPackage.price}</span>
+            <span className="font-medium">
+              {currencySymbol(selectedPackage.currency)}
+              {selectedPackage.price}
+            </span>
           </div>
         </CardContent>
       </Card>
@@ -285,7 +308,7 @@ function BookingInner() {
       <div className="w-full space-y-4">
         <StepTitle />
         <StepIndicator />
-        <div className="max-w-[650px] bg-white md:border rounded-4xl md:shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
+        <div className="max-w-[800px] bg-white md:border rounded-4xl md:shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
           <BookingStepContent />
         </div>
       </div>

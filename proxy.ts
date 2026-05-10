@@ -1,8 +1,20 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const publicPaths = ["/auth/sign-in", "/auth/sign-up", "/auth/business", "/book", "/"];
-const protectedRoutes = ["/activity", "/dashboard", "/packages", "/contracts", "/settings"];
+const publicPaths = [
+  "/auth/sign-in",
+  "/auth/sign-up",
+  "/auth/business",
+  "/book",
+  "/",
+];
+const protectedRoutes = [
+  "/activity",
+  "/dashboard",
+  "/packages",
+  "/contracts",
+  "/settings",
+];
 
 function isPublicPath(pathname: string) {
   if (publicPaths.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
@@ -59,5 +71,7 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };
