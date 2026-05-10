@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Spinner } from "@/components/ui/spinner";
+import { Switch } from "@/components/ui/switch";
 import { useUser } from "@/hooks/use-user";
 import { signOut } from "@/lib/supabase/auth";
 import {
@@ -221,7 +221,9 @@ export default function SettingsPage() {
                     size="sm"
                     onClick={() => fileInputRef.current?.click()}
                   >
-                    {(logoUrl && !logoRemoved) || logoPreview ? "Change Logo" : "Upload Logo"}
+                    {(logoUrl && !logoRemoved) || logoPreview
+                      ? "Change Logo"
+                      : "Upload Logo"}
                   </Button>
                   <input
                     ref={fileInputRef}
@@ -301,7 +303,9 @@ export default function SettingsPage() {
                 size="sm"
                 onClick={() => coverInputRef.current?.click()}
               >
-                {(coverUrl && !coverRemoved) || coverPreview ? "Change Cover" : "Upload Cover"}
+                {(coverUrl && !coverRemoved) || coverPreview
+                  ? "Change Cover"
+                  : "Upload Cover"}
               </Button>
               <input
                 ref={coverInputRef}
@@ -370,16 +374,9 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Sign Out</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Button variant="outline" onClick={handleLogout}>
-              Logout
-            </Button>
-          </CardContent>
-        </Card>
+        <Button onClick={handleLogout} variant="destructive">
+          Logout
+        </Button>
       </div>
     </Main>
   );
