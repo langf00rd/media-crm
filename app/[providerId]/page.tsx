@@ -67,7 +67,7 @@ function PackageSelection() {
       {packages.map((pkg) => (
         <Card
           key={pkg.id}
-          className="cursor-pointer md:min-h-[340px] rounded-[10px] hover:ring-2 hover:ring-primary bg-background transition-shadow"
+          className="cursor-pointer md:min-h-[250px] rounded-[10px] hover:ring-2 hover:ring-primary bg-background transition-shadow"
           onClick={() => selectPackage(pkg)}
         >
           <CardHeader>
@@ -94,7 +94,7 @@ function PackageSelection() {
           <CardFooter>
             <Button className="w-full bg-primary/10 text-primary">
               <PlusIcon />
-              Select Package
+              Select
             </Button>
           </CardFooter>
         </Card>
@@ -302,13 +302,6 @@ function SuccessView() {
   );
 }
 
-const STEP_COMPONENTS: Record<string, () => React.ReactNode> = {
-  packages: PackageSelection,
-  contract: ContractView,
-  payment: PaymentView,
-  success: SuccessView,
-};
-
 function BookingStepContent() {
   const { step } = useBooking();
   const Component = STEP_COMPONENTS[step];
@@ -349,9 +342,10 @@ function BookingInner({
       <div className="max-w-[800px] z-10 mx-auto w-full space-y-2">
         {/*<StepIndicator />*/}
         <div className="w-full h-full bg-white md:border rounded-2xl md:shadow-2xl shadow-black/20 space-y-5 mx-auto p-5">
-          <div className="flex flex-col-reverse gap-4 md:flex-row items-start md:justify-between md:items-center px-6">
+          <div className="flex flex-col-reverse gap-4 md:flex-row items-start md:justify-between md:items-center">
             <StepTitle />
             <div className="flex justify-center items-center gap-2">
+              <p className="capitalize">{orgName}</p>
               {orgLogo && (
                 <Image
                   src={orgLogo}
@@ -361,7 +355,6 @@ function BookingInner({
                   height={40}
                 />
               )}
-              <p className="capitalize">{orgName}</p>
             </div>
           </div>
           <BookingStepContent />
@@ -426,3 +419,10 @@ export default function BookPage() {
     </BookingProvider>
   );
 }
+
+const STEP_COMPONENTS: Record<string, () => React.ReactNode> = {
+  packages: PackageSelection,
+  contract: ContractView,
+  payment: PaymentView,
+  success: SuccessView,
+};
