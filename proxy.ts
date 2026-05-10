@@ -16,27 +16,7 @@ function isPublicPath(pathname: string) {
 }
 
 export async function proxy(request: NextRequest) {
-  let { pathname } = request.nextUrl;
-  const url = request.nextUrl.clone();
-
-  // Subdomain rewrite: <slug>.site.com -> site.com/<slug>
-  const hostname = request.headers.get("host") || "";
-  const subdomain = hostname.split(".")[0];
-  if (
-    subdomain &&
-    subdomain !== "www" &&
-    subdomain !== "localhost" &&
-    !hostname.startsWith("localhost") &&
-    !hostname.startsWith("127.0.0.1") &&
-    !hostname.startsWith("0.0.0.0")
-  ) {
-    url.pathname = `/${subdomain}${pathname === "/" ? "" : pathname}`;
-    pathname = url.pathname;
-    if (isPublicPath(pathname)) {
-      return NextResponse.rewrite(url);
-    }
-    return NextResponse.rewrite(url);
-  }
+  const { pathname } = request.nextUrl;
 
   if (isPublicPath(pathname)) {
     return NextResponse.next();
