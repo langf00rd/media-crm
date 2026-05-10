@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
@@ -113,8 +114,12 @@ function ContractView() {
 
   if (!selectedPackage || !contract) return null;
 
-  const fields = Object.keys(contract.fields) as (keyof typeof formData)[];
+  const fields = Object.keys(contract.fields).filter(
+    (f) => f !== "signature",
+  ) as (keyof typeof formData)[];
   const allFilled = fields.every((f) => formData[f]?.trim());
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const canProceed = allFilled && termsAccepted;
 
   const renderedContent = fields.reduce((acc, key) => {
     const value = formData[key];
@@ -180,7 +185,19 @@ function ContractView() {
                 />
               </div>
             ))}
-          <Button disabled={!allFilled} onClick={acceptContract}>
+          <div className="flex items-start gap-2 pt-2">
+            <Checkbox
+              className="top-0.5"
+              id="terms"
+              checked={termsAccepted}
+              onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+            />
+            <Label htmlFor="terms" className="text-sm leading-5">
+              I have read and agree to the terms of this contract and accept to
+              abide by them
+            </Label>
+          </div>
+          <Button disabled={!canProceed} onClick={acceptContract}>
             Accept & Continue
           </Button>
         </form>
@@ -330,23 +347,23 @@ function BookingInner({
         <div className="w-screen h-screen bg-black/30 fixed top-0 right-0" />
       )}
       <div className="max-w-[800px] z-10 mx-auto w-full space-y-2">
-        <div className="flex flex-col-reverse gap-4 md:flex-row items-start md:justify-between md:items-center px-6">
-          <StepTitle />
-          <div className="flex justify-center items-center gap-2">
-            {orgLogo && (
-              <Image
-                src={orgLogo}
-                alt={orgName}
-                className="border bg-white aspect-square rounded-lg object-cover"
-                width={40}
-                height={40}
-              />
-            )}
-            <p className="capitalize">{orgName}</p>
-          </div>
-        </div>
         {/*<StepIndicator />*/}
         <div className="w-full h-full bg-white md:border rounded-2xl md:shadow-2xl shadow-black/20 space-y-5 mx-auto p-5">
+          <div className="flex flex-col-reverse gap-4 md:flex-row items-start md:justify-between md:items-center px-6">
+            <StepTitle />
+            <div className="flex justify-center items-center gap-2">
+              {orgLogo && (
+                <Image
+                  src={orgLogo}
+                  alt={orgName}
+                  className="border bg-white aspect-square rounded-lg object-cover"
+                  width={40}
+                  height={40}
+                />
+              )}
+              <p className="capitalize">{orgName}</p>
+            </div>
+          </div>
           <BookingStepContent />
         </div>
       </div>

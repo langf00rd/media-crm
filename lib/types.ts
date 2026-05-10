@@ -19,7 +19,6 @@ export interface Request {
   id: string;
   first_name: string;
   last_name: string;
-  signature: string;
   package_id: string;
   organization_id: string;
   terms_accepted: boolean;

@@ -95,7 +95,6 @@ export function BookingProvider({
     await createRequest({
       first_name: formData.first_name || "",
       last_name: formData.last_name || "",
-      signature: formData.signature || "",
       package_id: selectedPackage.id,
       organization_id: organizationId,
       terms_accepted: true,

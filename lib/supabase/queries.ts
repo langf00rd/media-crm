@@ -198,7 +198,7 @@ export async function updateRequestStatus(
 }
 
 export async function createRequest(
-  input: Pick<Request, "first_name" | "last_name" | "signature" | "package_id" | "organization_id" | "terms_accepted">,
+  input: Pick<Request, "first_name" | "last_name" | "package_id" | "organization_id" | "terms_accepted">,
 ): Promise<Request | null> {
   const { data } = await supabase
     .from("requests")
