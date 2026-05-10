@@ -20,7 +20,7 @@ import {
 } from "@/lib/supabase/queries";
 import type { Contract, Package } from "@/lib/types";
 import { currencySymbol } from "@/lib/utils";
-import { Check, CreditCard } from "lucide-react";
+import { Check, CreditCard, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -66,13 +66,13 @@ function PackageSelection() {
       {packages.map((pkg) => (
         <Card
           key={pkg.id}
-          className="cursor-pointer min-h-[340px] rounded-[10px] hover:ring-2 hover:ring-primary bg-background transition-shadow"
+          className="cursor-pointer md:min-h-[340px] rounded-[10px] hover:ring-2 hover:ring-primary bg-background transition-shadow"
           onClick={() => selectPackage(pkg)}
         >
           <CardHeader>
             <CardTitle>{pkg.name}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 border h-full">
+          <CardContent className="space-y-4 h-full">
             <p className="text-3xl font-bold text-primary">
               {currencySymbol(pkg.currency)}
               {pkg.price}
@@ -91,7 +91,10 @@ function PackageSelection() {
             </ul>
           </CardContent>
           <CardFooter>
-            <Button className="w-full">Select Package</Button>
+            <Button className="w-full bg-primary/10 text-primary">
+              <PlusIcon />
+              Select Package
+            </Button>
           </CardFooter>
         </Card>
       ))}
@@ -299,7 +302,9 @@ function StepTitle() {
   const { step } = useBooking();
   const title = BOOKING_STEPS.find((s) => s.step === step)?.title;
   return title ? (
-    <h1 className="text-xl text-center font-medium">{title}</h1>
+    <h1 className="text-xl text-primary capitalize text-center font-medium">
+      {title}
+    </h1>
   ) : null;
 }
 
@@ -311,23 +316,25 @@ function BookingInner({
   orgLogo: string | null;
 }) {
   return (
-    <div className="w-screen min-h-screen bg-white md:bg-background flex items-center p-5">
-      <div className="w-full space-y-4">
-        <div className="flex mb-6 justify-center items-center gap-2">
-          {orgLogo && (
-            <Image
-              src={orgLogo}
-              alt={orgName}
-              className="border bg-white aspect-square rounded-lg object-cover"
-              width={40}
-              height={40}
-            />
-          )}
-          <p className="md:text-xl font-medium">{orgName}</p>
+    <div className="w-screen min-h-screen bg-white md:bg-background flex items-center py-5">
+      <div className="max-w-[800px] mx-auto w-full space-y-2">
+        <div className="flex flex-col-reverse gap-4 md:flex-row items-start md:justify-between md:items-center px-6">
+          <StepTitle />
+          <div className="flex justify-center items-center gap-2">
+            {orgLogo && (
+              <Image
+                src={orgLogo}
+                alt={orgName}
+                className="border bg-white aspect-square rounded-lg object-cover"
+                width={40}
+                height={40}
+              />
+            )}
+            <p className="capitalize">{orgName}</p>
+          </div>
         </div>
-        <StepTitle />
         {/*<StepIndicator />*/}
-        <div className="max-w-[800px] bg-white md:border rounded-2xl md:shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
+        <div className="w-full bg-white md:border rounded-2xl md:shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
           <BookingStepContent />
         </div>
       </div>
