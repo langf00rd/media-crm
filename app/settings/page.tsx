@@ -9,7 +9,13 @@ import { Switch } from "@/components/ui/switch";
 import { Spinner } from "@/components/ui/spinner";
 import { useUser } from "@/hooks/use-user";
 import { signOut } from "@/lib/supabase/auth";
-import { deleteLogo, updateOrganization, uploadLogo } from "@/lib/supabase/queries";
+import {
+  deleteCoverPhoto,
+  deleteLogo,
+  updateOrganization,
+  uploadCoverPhoto,
+  uploadLogo,
+} from "@/lib/supabase/queries";
 import { Check, Mail, Phone, Upload, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -23,6 +29,12 @@ export default function SettingsPage() {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoRemoved, setLogoRemoved] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [coverUrl, setCoverUrl] = useState<string | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [coverRemoved, setCoverRemoved] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -31,12 +43,13 @@ export default function SettingsPage() {
     reminderDays: "7",
   });
 
-  // Clean up object URL on unmount
+  // Clean up object URLs on unmount
   useEffect(() => {
     return () => {
       if (logoPreview) URL.revokeObjectURL(logoPreview);
+      if (coverPreview) URL.revokeObjectURL(coverPreview);
     };
-  }, [logoPreview]);
+  }, [logoPreview, coverPreview]);
 
   useEffect(() => {
     if (org) {
@@ -49,6 +62,8 @@ export default function SettingsPage() {
       });
       setLogoUrl(org.logo);
       setLogoRemoved(false);
+      setCoverUrl(org.cover_photo);
+      setCoverRemoved(false);
     }
   }, [org]);
 
@@ -59,6 +74,23 @@ export default function SettingsPage() {
     setLogoRemoved(false);
     if (logoPreview) URL.revokeObjectURL(logoPreview);
     setLogoPreview(URL.createObjectURL(file));
+  };
+
+  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCoverFile(file);
+    setCoverRemoved(false);
+    if (coverPreview) URL.revokeObjectURL(coverPreview);
+    setCoverPreview(URL.createObjectURL(file));
+  };
+
+  const handleRemoveCover = () => {
+    setCoverFile(null);
+    if (coverPreview) URL.revokeObjectURL(coverPreview);
+    setCoverPreview(null);
+    setCoverRemoved(true);
+    if (coverInputRef.current) coverInputRef.current.value = "";
   };
 
   const handleRemoveLogo = () => {
@@ -74,6 +106,7 @@ export default function SettingsPage() {
     setSaving(true);
 
     let newLogoUrl: string | null = logoUrl;
+    let newCoverUrl: string | null = coverUrl;
 
     if (logoRemoved) {
       await deleteLogo(org.id);
@@ -83,18 +116,31 @@ export default function SettingsPage() {
       if (url) newLogoUrl = url;
     }
 
+    if (coverRemoved) {
+      await deleteCoverPhoto(org.id);
+      newCoverUrl = null;
+    } else if (coverFile) {
+      const url = await uploadCoverPhoto(org.id, coverFile);
+      if (url) newCoverUrl = url;
+    }
+
     await updateOrganization(org.id, {
       name: formData.name,
       category: formData.category,
       email: formData.email,
       phone: formData.phone,
       logo: newLogoUrl,
+      cover_photo: newCoverUrl,
     });
     await refresh();
     setLogoFile(null);
     setLogoRemoved(false);
     if (logoPreview) URL.revokeObjectURL(logoPreview);
     setLogoPreview(null);
+    setCoverFile(null);
+    setCoverRemoved(false);
+    if (coverPreview) URL.revokeObjectURL(coverPreview);
+    setCoverPreview(null);
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -219,6 +265,54 @@ export default function SettingsPage() {
                   }
                 />
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Cover Photo</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {(coverUrl && !coverRemoved) || coverPreview ? (
+              <div className="relative w-full aspect-[3/1] rounded-xl overflow-hidden border">
+                <img
+                  src={coverPreview || coverUrl || ""}
+                  alt="Cover photo"
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={handleRemoveCover}
+                  className="absolute top-2 right-2 bg-background/80 rounded-full p-1"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <div className="w-full aspect-[3/1] rounded-xl border border-dashed flex items-center justify-center text-muted-foreground">
+                <Upload size={24} />
+              </div>
+            )}
+            <div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => coverInputRef.current?.click()}
+              >
+                {(coverUrl && !coverRemoved) || coverPreview ? "Change Cover" : "Upload Cover"}
+              </Button>
+              <input
+                ref={coverInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleCoverChange}
+                className="hidden"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                PNG, JPG or WebP. Recommended 3:1 aspect ratio.
+              </p>
             </div>
           </CardContent>
         </Card>

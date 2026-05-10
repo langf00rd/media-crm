@@ -80,7 +80,7 @@ export async function createOrganization(
 
 export async function updateOrganization(
   id: string,
-  updates: Partial<Pick<Organization, "name" | "category" | "email" | "phone" | "logo">>,
+  updates: Partial<Pick<Organization, "name" | "category" | "email" | "phone" | "logo" | "cover_photo">>,
 ): Promise<void> {
   await supabase.from("organizations").update(updates).eq("id", id);
 }
@@ -231,7 +231,7 @@ export async function uploadLogo(
     .from(LOGOS_BUCKET)
     .getPublicUrl(filePath);
 
-  return publicUrl;
+  return `${publicUrl}?t=${Date.now()}`;
 }
 
 export async function deleteLogo(orgId: string): Promise<void> {
@@ -240,7 +240,42 @@ export async function deleteLogo(orgId: string): Promise<void> {
     .list(orgId);
 
   if (data && data.length > 0) {
-    const paths = data.map((f) => `${orgId}/${f.name}`);
-    await supabase.storage.from(LOGOS_BUCKET).remove(paths);
+    const paths = data
+      .filter((f) => f.name.startsWith("logo"))
+      .map((f) => `${orgId}/${f.name}`);
+    if (paths.length > 0) await supabase.storage.from(LOGOS_BUCKET).remove(paths);
+  }
+}
+
+export async function uploadCoverPhoto(
+  orgId: string,
+  file: File,
+): Promise<string | null> {
+  const ext = file.name.split(".").pop() || "jpg";
+  const filePath = `${orgId}/cover.${ext}`;
+
+  const { error } = await supabase.storage
+    .from(LOGOS_BUCKET)
+    .upload(filePath, file, { upsert: true, cacheControl: "3600" });
+
+  if (error) return null;
+
+  const { data: { publicUrl } } = supabase.storage
+    .from(LOGOS_BUCKET)
+    .getPublicUrl(filePath);
+
+  return `${publicUrl}?t=${Date.now()}`;
+}
+
+export async function deleteCoverPhoto(orgId: string): Promise<void> {
+  const { data } = await supabase.storage
+    .from(LOGOS_BUCKET)
+    .list(orgId);
+
+  if (data && data.length > 0) {
+    const paths = data
+      .filter((f) => f.name.startsWith("cover"))
+      .map((f) => `${orgId}/${f.name}`);
+    if (paths.length > 0) await supabase.storage.from(LOGOS_BUCKET).remove(paths);
   }
 }

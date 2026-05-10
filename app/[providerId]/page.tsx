@@ -311,13 +311,25 @@ function StepTitle() {
 function BookingInner({
   orgName,
   orgLogo,
+  orgCoverPhoto,
 }: {
   orgName: string;
   orgLogo: string | null;
+  orgCoverPhoto: string | null;
 }) {
   return (
-    <div className="w-screen min-h-screen bg-white md:bg-background flex items-center py-5">
-      <div className="max-w-[800px] mx-auto w-full space-y-2">
+    <div
+      className="w-screen px-5 min-h-screen bg-cover bg-center bg-no-repeat flex items-center py-5 pt-16"
+      style={
+        orgCoverPhoto
+          ? { backgroundImage: `url(${orgCoverPhoto})` }
+          : { backgroundColor: "var(--background)" }
+      }
+    >
+      {orgCoverPhoto && (
+        <div className="w-screen h-screen bg-black/30 fixed top-0 right-0" />
+      )}
+      <div className="max-w-[800px] z-10 mx-auto w-full space-y-2">
         <div className="flex flex-col-reverse gap-4 md:flex-row items-start md:justify-between md:items-center px-6">
           <StepTitle />
           <div className="flex justify-center items-center gap-2">
@@ -334,7 +346,7 @@ function BookingInner({
           </div>
         </div>
         {/*<StepIndicator />*/}
-        <div className="w-full bg-white md:border rounded-2xl md:shadow-2xl shadow-neutral-200 space-y-5 mx-auto p-5">
+        <div className="w-full h-full bg-white md:border rounded-2xl md:shadow-2xl shadow-black/20 space-y-5 mx-auto p-5">
           <BookingStepContent />
         </div>
       </div>
@@ -349,6 +361,7 @@ export default function BookPage() {
   const [orgId, setOrgId] = useState("");
   const [orgName, setOrgName] = useState("");
   const [orgLogo, setOrgLogo] = useState<string | null>(null);
+  const [orgCoverPhoto, setOrgCoverPhoto] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -363,6 +376,7 @@ export default function BookPage() {
       setOrgId(org.id);
       setOrgName(org.name);
       setOrgLogo(org.logo);
+      setOrgCoverPhoto(org.cover_photo);
       const [pkgs, ctracts] = await Promise.all([
         getPackagesByOrg(org.id),
         getContracts(),
@@ -386,7 +400,11 @@ export default function BookPage() {
           <Spinner />
         </div>
       ) : (
-        <BookingInner orgName={orgName} orgLogo={orgLogo} />
+        <BookingInner
+          orgName={orgName}
+          orgLogo={orgLogo}
+          orgCoverPhoto={orgCoverPhoto}
+        />
       )}
     </BookingProvider>
   );

@@ -2,6 +2,7 @@ export interface Organization {
   id: string;
   name: string;
   logo: string | null;
+  cover_photo: string | null;
   category: string;
   phone: string | null;
   email: string | null;
