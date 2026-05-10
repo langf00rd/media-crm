@@ -39,7 +39,7 @@ export default function BusinessPage() {
       return;
     }
 
-    router.push("/activity");
+    router.push("/dashboard");
   };
 
   return (

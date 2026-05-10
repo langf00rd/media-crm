@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signUpWithEmail } from "@/lib/supabase/auth";
+import { signInWithEmail, signUpWithEmail } from "@/lib/supabase/auth";
+import { createUser } from "@/lib/supabase/queries";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -22,17 +23,40 @@ export default function SignUpPage() {
     setError("");
     setLoading(true);
 
-    const { error: authError } = await signUpWithEmail(email, password, {
+    const { data: authData, error: authError } = await signUpWithEmail(email, password, {
       first_name: firstName,
       last_name: lastName,
     });
-    setLoading(false);
 
     if (authError) {
       setError(authError.message);
+      setLoading(false);
       return;
     }
 
+    const { error: signInError } = await signInWithEmail(email, password);
+    if (signInError) {
+      setError(signInError.message);
+      setLoading(false);
+      return;
+    }
+
+    const user = authData?.user;
+    if (user) {
+      const { error: createUserError } = await createUser({
+        id: user.id,
+        email: email,
+        first_name: firstName,
+        last_name: lastName,
+      });
+      if (createUserError) {
+        setError(createUserError.message);
+        setLoading(false);
+        return;
+      }
+    }
+
+    setLoading(false);
     router.push("/auth/business");
   };
 

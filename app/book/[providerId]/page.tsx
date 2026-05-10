@@ -124,7 +124,7 @@ function ContractView() {
 
       {fields.length > 0 && (
         <form className="space-y-4">
-          <div className="flex gap-5">
+          <div className="grid md:grid-cols-2 gap-5">
             {fields.map((field) => (
               <div key={String(field)} className="space-y-2 w-full">
                 <Label htmlFor={String(field)}>
@@ -256,7 +256,7 @@ function StepTitle() {
 
 function BookingInner() {
   return (
-    <div className="w-screen h-screen bg-white md:bg-background flex items-center p-5">
+    <div className="w-screen min-h-screen bg-white md:bg-background flex items-center p-5">
       <div className="w-full space-y-4">
         <StepTitle />
         <StepIndicator />

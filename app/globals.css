@@ -142,11 +142,11 @@
 }
 
 .prose {
-  @apply leading-[32px];
+  @apply leading-7 md:leading-[30px] lg:leading-[32px];
 }
 
 .prose p {
-  @apply text-neutral-600 text-base;
+  @apply text-neutral-600 text-sm mb-4 md:text-base md:mb-5 lg:mb-6;
 }
 
 .prose h1,
@@ -156,19 +156,15 @@
 }
 
 .prose h1 {
-  @apply text-2xl font-semibold;
+  @apply text-xl font-semibold md:text-2xl;
 }
 
 .prose h2 {
-  @apply text-xl font-semibold;
+  @apply text-lg font-semibold md:text-xl;
 }
 
 .prose h3 {
-  @apply text-lg font-semibold;
-}
-
-.prose p {
-  @apply mb-6;
+  @apply text-base font-semibold md:text-lg;
 }
 
 .prose hr {

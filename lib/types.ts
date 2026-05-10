@@ -10,6 +10,10 @@ export interface Organization {
   updated_dt: string;
 }
 
+export interface RequestWithPackage extends Request {
+  packages: Package;
+}
+
 export interface Request {
   id: string;
   first_name: string;
@@ -32,6 +36,15 @@ export interface Package {
   deposit_percentage: number;
   features: string[];
   contract_id?: string;
+  created_dt: string;
+  updated_dt: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
   created_dt: string;
   updated_dt: string;
 }

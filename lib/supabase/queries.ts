@@ -1,5 +1,5 @@
 import { supabase } from "./client";
-import type { Contract, Organization, Package, Request } from "@/lib/types";
+import type { Contract, Organization, Package, Request, RequestWithPackage, User } from "@/lib/types";
 
 // ------------------------------------------------------------------
 // Helpers
@@ -7,6 +7,22 @@ import type { Contract, Organization, Package, Request } from "@/lib/types";
 
 function mapRow<T>(row: Record<string, unknown>): T {
   return row as unknown as T;
+}
+
+// ------------------------------------------------------------------
+// Users
+// ------------------------------------------------------------------
+
+export async function createUser(
+  input: Pick<User, "id" | "email" | "first_name" | "last_name">,
+): Promise<{ data: User | null; error: Error | null }> {
+  const { data, error } = await supabase
+    .from("users")
+    .insert(input)
+    .select()
+    .single();
+  if (error) return { data: null, error: new Error(error.message) };
+  return { data: data ? mapRow<User>(data) : null, error: null };
 }
 
 // ------------------------------------------------------------------
@@ -36,8 +52,9 @@ export async function getOrganizationById(
 }
 
 export async function hasOrganization(): Promise<boolean> {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return false;
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.user) return false;
+  const user = session.user;
   const { data } = await supabase
     .from("organizations")
     .select("id")
@@ -49,8 +66,9 @@ export async function hasOrganization(): Promise<boolean> {
 export async function createOrganization(
   input: Pick<Organization, "name" | "slug" | "category" | "phone" | "email">,
 ): Promise<{ data: Organization | null; error: Error | null }> {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { data: null, error: new Error("Not authenticated") };
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.user) return { data: null, error: new Error("Not authenticated") };
+  const user = session.user;
   const { data, error } = await supabase
     .from("organizations")
     .insert({ id: user.id, ...input })
@@ -142,8 +160,8 @@ export async function getContract(id: string): Promise<Contract | null> {
 
 export async function getRequests(
   statusFilter?: string,
-): Promise<Request[]> {
-  let query = supabase.from("requests").select("*");
+): Promise<RequestWithPackage[]> {
+  let query = supabase.from("requests").select("*, packages(*)");
   if (statusFilter && statusFilter !== "all") {
     if (statusFilter === "active") {
       query = query.in("status", ["pending", "in-progress"]);
@@ -152,12 +170,12 @@ export async function getRequests(
     }
   }
   const { data } = await query.order("created_dt", { ascending: false });
-  return (data ?? []).map((r) => mapRow<Request>(r));
+  return (data ?? []).map((r) => mapRow<RequestWithPackage>(r));
 }
 
-export async function getRequest(id: string): Promise<Request | null> {
-  const { data } = await supabase.from("requests").select("*").eq("id", id).single();
-  return data ? mapRow<Request>(data) : null;
+export async function getRequest(id: string): Promise<RequestWithPackage | null> {
+  const { data } = await supabase.from("requests").select("*, packages(*)").eq("id", id).single();
+  return data ? mapRow<RequestWithPackage>(data) : null;
 }
 
 export async function updateRequestStatus(

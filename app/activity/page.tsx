@@ -1,6 +1,7 @@
 "use client";
 
 import Main from "@/components/main";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -10,7 +11,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { getRequests } from "@/lib/supabase/queries";
-import type { Request } from "@/lib/types";
+import type { RequestWithPackage } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
@@ -23,7 +24,7 @@ function RequestsContent() {
       | "completed"
       | "cancelled") || "all";
   const [requestFilter, setRequestFilter] = useState(initialFilter);
-  const [requests, setRequests] = useState<Request[]>([]);
+  const [requests, setRequests] = useState<RequestWithPackage[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,7 +41,9 @@ function RequestsContent() {
 
   useEffect(() => {
     setLoading(true);
-    getRequests(requestFilter).then(setRequests).finally(() => setLoading(false));
+    getRequests(requestFilter)
+      .then(setRequests)
+      .finally(() => setLoading(false));
   }, [requestFilter]);
 
   return (
@@ -68,9 +71,10 @@ function RequestsContent() {
             <Item key={r.id} className="shadow-xs bg-white">
               <ItemContent>
                 <ItemTitle>{`${r.first_name} ${r.last_name}`}</ItemTitle>
-                <ItemDescription>{r.status}</ItemDescription>
+                <ItemDescription>{r.packages?.name} &middot; {r.status}</ItemDescription>
               </ItemContent>
               <ItemActions>
+                {r.terms_accepted && <Badge>Accepted terms</Badge>}
                 <Button variant="outline">Mark as completed</Button>
               </ItemActions>
             </Item>
