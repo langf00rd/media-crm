@@ -27,7 +27,7 @@ export default function ContractItem(props: { contract: Contract }) {
           <DownloadIcon />
           Download PDF
         </Button>
-        <Button variant="outline">Send</Button>
+        {/*<Button variant="outline">Send</Button>*/}
       </CardFooter>
     </Card>
   );

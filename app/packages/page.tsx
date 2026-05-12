@@ -71,14 +71,15 @@ export default function PackagesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {packages.map((pkg) => (
             <Link href={`/packages/edit/${pkg.id}`} key={pkg.id}>
-              <Card>
+              <Card className="h-full">
                 <CardHeader>
                   <CardTitle>{pkg.name}</CardTitle>
                   <CardDescription>{pkg.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <p className="text-3xl font-medium text-primary">
-                    {currencySymbol(pkg.currency)}{pkg.price}
+                    {currencySymbol(pkg.currency)}
+                    {pkg.price}
                   </p>
                   <div className="space-y-2">
                     <p>What you get:</p>
