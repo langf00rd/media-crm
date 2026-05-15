@@ -1,8 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
@@ -34,4 +34,8 @@ export function downloadElementHtml(el: HTMLElement, title: string): void {
 </html>`);
   win.document.close();
   win.print();
+}
+
+export function isoToDate(iso: string): string {
+  return new Date(iso).toLocaleDateString();
 }

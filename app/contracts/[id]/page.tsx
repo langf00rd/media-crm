@@ -1,11 +1,9 @@
 "use client";
 
 import Main from "@/components/main";
-import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { getContract } from "@/lib/supabase/queries";
 import type { Contract } from "@/lib/types";
-import { Share2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -22,18 +20,7 @@ export default function ContractDetailPage() {
   }, [params.id]);
 
   return (
-    <Main
-      showBackButton
-      title={contract?.title}
-      slotRight={
-        <div className="flex gap-2">
-          <Button variant="outline">Download</Button>
-          <Button variant="outline">
-            <Share2 className="opacity-50" /> Send
-          </Button>
-        </div>
-      }
-    >
+    <Main showBackButton title={contract?.title}>
       {loading ? (
         <div className="py-32 flex items-center justify-center">
           <Spinner />

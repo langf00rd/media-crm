@@ -31,7 +31,7 @@ function StepIndicator() {
   const { step } = useBooking();
   const stepIndex = BOOKING_STEPS.findIndex((s) => s.step === step);
   return (
-    <div className="flex justify-center gap-8">
+    <div className="flex items-center gap-8">
       {BOOKING_STEPS.map((s, idx) => (
         <div key={s.step} className="flex items-center gap-2">
           <div
@@ -67,7 +67,7 @@ function PackageSelection() {
       {packages.map((pkg) => (
         <Card
           key={pkg.id}
-          className="cursor-pointer md:min-h-[250px] rounded-[10px] hover:ring-2 hover:ring-primary bg-background transition-shadow"
+          className="cursor-pointer md:min-h-[250px] rounded-sm hover:ring-2 hover:ring-primary bg-background transition-shadow"
           onClick={() => selectPackage(pkg)}
         >
           <CardHeader>
@@ -164,7 +164,9 @@ function ContractView() {
             })}
           </div>
           {clientFields
-            .filter((f) => f !== "first_name" && f !== "last_name" && f !== "date")
+            .filter(
+              (f) => f !== "first_name" && f !== "last_name" && f !== "date",
+            )
             .map((field) => (
               <div key={String(field)} className="space-y-2">
                 <Label htmlFor={String(field)}>
@@ -266,7 +268,9 @@ function SuccessView() {
   const handleDownload = () => {
     if (!downloadRef.current || !contract || !selectedPackage) return;
     const user = selectedPackage.contract_fields?.full_name || "";
-    const client = [formData.first_name, formData.last_name].filter(Boolean).join(" ");
+    const client = [formData.first_name, formData.last_name]
+      .filter(Boolean)
+      .join(" ");
     const title = [contract.title, user, client].filter(Boolean).join(" ");
     downloadElementHtml(downloadRef.current, title);
   };
@@ -279,7 +283,10 @@ function SuccessView() {
     ];
     return replacements.reduce((acc, [key, value]) => {
       if (value) {
-        return acc.replace(new RegExp(`\\{\\{${String(key)}\\}\\}`, "g"), value);
+        return acc.replace(
+          new RegExp(`\\{\\{${String(key)}\\}\\}`, "g"),
+          value,
+        );
       }
       return acc;
     }, contract.content);
@@ -375,36 +382,42 @@ function BookingInner({
   orgCoverPhoto: string | null;
 }) {
   return (
-    <div
-      className="w-screen px-5 min-h-screen bg-cover bg-center bg-no-repeat flex items-center py-5 pt-16"
-      style={
-        orgCoverPhoto
-          ? { backgroundImage: `url(${orgCoverPhoto})` }
-          : { backgroundColor: "var(--background)" }
-      }
-    >
+    <div className="relative">
       {orgCoverPhoto && (
-        <div className="w-screen h-screen bg-black/30 fixed top-0 right-0" />
+        <>
+          <div
+            className="fixed inset-0 bg-cover bg-center bg-no-repeat -z-10"
+            style={{ backgroundImage: `url(${orgCoverPhoto})` }}
+          />
+          <div className="fixed inset-0 bg-black/30 -z-10" />
+        </>
       )}
-      <div className="max-w-[800px] z-10 mx-auto w-full space-y-2">
-        {/*<StepIndicator />*/}
-        <div className="w-full h-full bg-white md:border rounded-2xl md:shadow-2xl shadow-black/20 space-y-5 mx-auto p-5">
-          <div className="flex flex-col-reverse gap-4 md:flex-row items-start md:justify-between md:items-center">
-            <StepTitle />
-            <div className="flex justify-center items-center gap-2">
-              <p className="capitalize">{orgName}</p>
-              {orgLogo && (
-                <Image
-                  src={orgLogo}
-                  alt={orgName}
-                  className="border bg-white aspect-square rounded-lg object-cover"
-                  width={40}
-                  height={40}
-                />
-              )}
+      <div
+        className="relative z-10 px-5 min-h-screen flex items-center py-5 pt-16"
+        style={
+          !orgCoverPhoto ? { backgroundColor: "var(--background)" } : undefined
+        }
+      >
+        <div className="max-w-[800px] mx-auto w-full space-y-2">
+          <div className="w-full bg-white/90 backdrop-blur-2xl md:border rounded-sm md:shadow-2xl shadow-black/20 space-y-5 mx-auto p-5">
+            <div className="flex flex-col-reverse gap-4 md:flex-row items-start md:justify-between md:items-center">
+              <StepTitle />
+              <div className="flex justify-center items-center gap-2">
+                <p className="capitalize">{orgName}</p>
+                {orgLogo && (
+                  <Image
+                    src={orgLogo}
+                    alt={orgName}
+                    className="border bg-white aspect-square rounded-sm object-cover"
+                    width={40}
+                    height={40}
+                  />
+                )}
+              </div>
             </div>
+            <StepIndicator />
+            <BookingStepContent />
           </div>
-          <BookingStepContent />
         </div>
       </div>
     </div>

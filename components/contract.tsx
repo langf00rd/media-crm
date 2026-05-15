@@ -1,4 +1,5 @@
 import { Contract } from "@/lib/types";
+import { isoToDate } from "@/lib/utils";
 import {
   Card,
   CardDescription,
@@ -6,9 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-
-import { DownloadIcon } from "lucide-react";
-import { Button } from "./ui/button";
 
 export default function ContractItem(props: { contract: Contract }) {
   return (
@@ -23,11 +21,9 @@ export default function ContractItem(props: { contract: Contract }) {
         </div>
       </CardContent>*/}
       <CardFooter className="gap-4">
-        <Button className="bg-primary/10 text-primary" disabled>
-          <DownloadIcon />
-          Download PDF
-        </Button>
-        {/*<Button variant="outline">Send</Button>*/}
+        <p className="text-muted-foreground">
+          Created {isoToDate(props.contract.created_dt)}
+        </p>
       </CardFooter>
     </Card>
   );
