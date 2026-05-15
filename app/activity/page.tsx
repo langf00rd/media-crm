@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/item";
 import { getRequests } from "@/lib/supabase/queries";
 import type { RequestWithPackage } from "@/lib/types";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 function RequestsContent() {
@@ -26,6 +26,7 @@ function RequestsContent() {
   const [requestFilter, setRequestFilter] = useState(initialFilter);
   const [requests, setRequests] = useState<RequestWithPackage[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     if (searchParams.get("filter")) {
@@ -68,14 +69,13 @@ function RequestsContent() {
           <p className="text-text-secondary">No requests found.</p>
         ) : (
           requests.map((r) => (
-            <Item key={r.id} className="shadow-xs bg-white">
+            <Item key={r.id} className="shadow-xs bg-white cursor-pointer" onClick={() => router.push(`/activity/${r.id}`)}>
               <ItemContent>
                 <ItemTitle>{`${r.first_name} ${r.last_name}`}</ItemTitle>
                 <ItemDescription>{r.packages?.name} &middot; {r.status}</ItemDescription>
               </ItemContent>
               <ItemActions>
                 {r.terms_accepted && <Badge>Accepted terms</Badge>}
-                <Button variant="outline">Mark as completed</Button>
               </ItemActions>
             </Item>
           ))

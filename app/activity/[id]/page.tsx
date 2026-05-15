@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "next/navigation";
-import { ArrowLeft, CheckCircle2, Check, Download } from "lucide-react";
+import Main from "@/components/main";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getContract, getPackage, getRequest, updateRequestStatus } from "@/lib/supabase/queries";
 import type { Contract, Package, Request } from "@/lib/types";
 import { currencySymbol, downloadElementHtml } from "@/lib/utils";
+import { Check, CheckCircle2, Download } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 export default function RequestDetailPage() {
@@ -62,83 +65,81 @@ export default function RequestDetailPage() {
     }, contract.content);
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
-  if (!request) return <div className="p-6">Request not found</div>;
+  if (loading) return <Main><div className="p-6">Loading...</div></Main>;
+  if (!request) return <Main><div className="p-6">Request not found</div></Main>;
 
   return (
-    <div className="p-6 space-y-6">
-      <Button variant="link" onClick={() => window.history.back()} className="mb-4">
-        <ArrowLeft size={20} />
-        Back to Activity
-      </Button>
-
-      <div className="bg-card-bg backdrop-blur-lg rounded-card shadow-card p-6 space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">{`${request.first_name} ${request.last_name}`}</h1>
-          <p className="text-text-secondary mt-2">Status: {request.status}</p>
+    <Main
+      showBackButton
+      title={`${request.first_name} ${request.last_name}`}
+      slotRight={
+        <div className="flex gap-2">
+          {request.status !== "completed" && !completed && (
+            <Button onClick={handleMarkComplete}>Mark as Complete</Button>
+          )}
+        </div>
+      }
+    >
+      <div className="space-y-6">
+        <div className="flex items-center gap-2">
+          <Badge variant={request.status === "completed" ? "default" : "secondary"}>
+            {request.status}
+          </Badge>
+          {request.terms_accepted && <Badge>Accepted terms</Badge>}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <InfoItem label="First Name" value={request.first_name} />
-          <InfoItem label="Last Name" value={request.last_name} />
-          <InfoItem label="Date Signed" value={new Date(request.created_dt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })} />
-          <InfoItem label="Terms Accepted" value={request.terms_accepted ? "Yes" : "No"} />
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Client Information</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-4">
+            <InfoItem label="First Name" value={request.first_name} />
+            <InfoItem label="Last Name" value={request.last_name} />
+            <InfoItem label="Date Signed" value={new Date(request.created_dt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })} />
+            <InfoItem label="Terms Accepted" value={request.terms_accepted ? "Yes" : "No"} />
+          </CardContent>
+        </Card>
 
         {pkg && (
-          <>
-            <div className="border-t border-gray-200 pt-6">
-              <h2 className="text-xl font-bold text-foreground mb-4">Package Details</h2>
-              <div className="space-y-3">
-                <InfoItem label="Package" value={pkg.name} />
-                <InfoItem label="Package Price" value={`${currencySymbol(pkg.currency)}${pkg.price}`} />
-                <InfoItem label={`Deposit (${pkg.deposit_percentage}%)`} value={`${currencySymbol(pkg.currency)}${Math.round((pkg.price * pkg.deposit_percentage) / 100)}`} />
-              </div>
-            </div>
-
-            <div className="border-t border-gray-200 pt-6">
-              <h2 className="text-xl font-bold text-foreground mb-4">Balance</h2>
-              <div className="space-y-3">
-                <InfoItem label="Balance Due" value={`${currencySymbol(pkg.currency)}${pkg.price - Math.round((pkg.price * pkg.deposit_percentage) / 100)}`} />
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-input">
-                  <span className="text-foreground font-medium">Terms Accepted</span>
-                  <span className={request.terms_accepted ? "text-success" : "text-warning"}>
-                    {request.terms_accepted ? "✓ Yes" : "Pending"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </>
+          <Card>
+            <CardHeader>
+              <CardTitle>Package Details</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <InfoItem label="Package" value={pkg.name} />
+              <InfoItem label="Package Price" value={`${currencySymbol(pkg.currency)}${pkg.price}`} />
+              <InfoItem label={`Deposit (${pkg.deposit_percentage}%)`} value={`${currencySymbol(pkg.currency)}${Math.round((pkg.price * pkg.deposit_percentage) / 100)}`} />
+              <InfoItem label="Balance Due" value={`${currencySymbol(pkg.currency)}${pkg.price - Math.round((pkg.price * pkg.deposit_percentage) / 100)}`} />
+            </CardContent>
+          </Card>
         )}
 
         {contract && (
-          <div className="border-t border-gray-200 pt-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-foreground">Contract</h2>
-              <Button variant="outline" size="sm" onClick={handleDownload}>
-                <Download size={16} />
-                Download / Print
-              </Button>
-            </div>
-            <div className="prose prose-sm p-3 md:p-5 rounded-md border bg-background max-w-none">
-              <ReactMarkdown>{renderedContent()}</ReactMarkdown>
-            </div>
-          </div>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Contract</CardTitle>
+                <Button variant="outline" size="sm" onClick={handleDownload}>
+                  <Download size={16} />
+                  Download / Print
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="prose prose-sm p-3 md:p-5 rounded-md border bg-background max-w-none">
+                <ReactMarkdown>{renderedContent()}</ReactMarkdown>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         <div ref={downloadRef} className="hidden">
           {contract && <ReactMarkdown>{renderedContent()}</ReactMarkdown>}
         </div>
-
-        {request.status !== "completed" && !completed && (
-          <Button className="w-full bg-success text-white hover:bg-green-600" onClick={handleMarkComplete}>
-            Mark as Complete
-          </Button>
-        )}
 
         {completed && (
           <div className="p-4 bg-green-50 border border-green-200 rounded-input text-success font-medium flex items-center gap-2">
@@ -147,14 +148,14 @@ export default function RequestDetailPage() {
           </div>
         )}
 
-        {request.status === "completed" && (
+        {request.status === "completed" && !completed && (
           <div className="p-4 bg-green-50 border border-green-200 rounded-input text-success font-medium flex items-center gap-2">
             <CheckCircle2 size={20} />
             Completed on {request.completed_dt ? new Date(request.completed_dt).toLocaleDateString() : "N/A"}
           </div>
         )}
       </div>
-    </div>
+    </Main>
   );
 }
 
