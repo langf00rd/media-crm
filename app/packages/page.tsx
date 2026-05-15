@@ -1,6 +1,7 @@
 "use client";
 
 import Main from "@/components/main";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -69,11 +70,21 @@ export default function PackagesPage() {
         <p className="text-text-secondary">No packages yet.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {packages.map((pkg) => (
+          {packages
+            .sort((a, b) => {
+              if (a.status === b.status) return 0;
+              return a.status === "ACTIVE" ? -1 : 1;
+            })
+            .map((pkg) => (
             <Link href={`/packages/edit/${pkg.id}`} key={pkg.id}>
               <Card className="h-full">
                 <CardHeader>
-                  <CardTitle>{pkg.name}</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    {pkg.name}
+                    {pkg.status === "INACTIVE" && (
+                      <Badge variant="outline" className="text-xs">INACTIVE</Badge>
+                    )}
+                  </CardTitle>
                   <CardDescription>{pkg.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">

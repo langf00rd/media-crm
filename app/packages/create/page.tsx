@@ -104,6 +104,7 @@ export default function CreatePackagePage() {
         Object.keys(packageForm.contract_fields).length > 0
           ? packageForm.contract_fields
           : undefined,
+      status: "ACTIVE",
     });
     setSaved(true);
     setTimeout(() => {

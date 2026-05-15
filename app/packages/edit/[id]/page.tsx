@@ -15,13 +15,14 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  deletePackage,
   getContracts,
   getPackage,
   updatePackage,
 } from "@/lib/supabase/queries";
 import type { Contract, Package } from "@/lib/types";
 import { Check } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 export default function EditPackagePage() {
@@ -49,6 +50,7 @@ export default function EditPackagePage() {
     features: string;
   });
   const [saved, setSaved] = useState(false);
+  const router = useRouter();
 
   const [fieldsDialogOpen, setFieldsDialogOpen] = useState(false);
   const [prevContractState, setPrevContractState] = useState({
@@ -134,6 +136,22 @@ export default function EditPackagePage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
+  const handleDelete = async () => {
+    if (pkg?.status === "INACTIVE") {
+      await updatePackage(params.id, { status: "ACTIVE" });
+      setPkg({ ...pkg, status: "ACTIVE" });
+      return;
+    }
+    if (!window.confirm("Are you sure you want to delete this package?")) return;
+    try {
+      await deletePackage(params.id);
+      router.push("/packages");
+    } catch (e) {
+      await updatePackage(params.id, { status: "INACTIVE" });
+      setPkg((prev) => prev ? { ...prev, status: "INACTIVE" } : null);
+    }
+  };
+
   return (
     <Main
       showBackButton
@@ -143,7 +161,12 @@ export default function EditPackagePage() {
             {saved ? <Check size={16} /> : null}
             {saved ? "Saved!" : "Save Changes"}
           </Button>
-          <Button variant="destructive">Delete</Button>
+          <Button
+            variant={pkg?.status === "INACTIVE" ? "default" : "destructive"}
+            onClick={handleDelete}
+          >
+            {pkg?.status === "INACTIVE" ? "Activate" : "Delete"}
+          </Button>
         </div>
       }
     >

@@ -120,13 +120,15 @@ export async function createPackage(
 
 export async function updatePackage(
   id: string,
-  updates: Partial<Pick<Package, "name" | "description" | "price" | "deposit_percentage" | "features" | "contract_id" | "currency" | "contract_fields">>,
+  updates: Partial<Pick<Package, "name" | "description" | "price" | "deposit_percentage" | "features" | "contract_id" | "currency" | "contract_fields" | "status">>,
 ): Promise<void> {
-  await supabase.from("packages").update(updates).eq("id", id);
+  const { error } = await supabase.from("packages").update(updates).eq("id", id);
+  if (error) throw new Error(error.message);
 }
 
 export async function deletePackage(id: string): Promise<void> {
-  await supabase.from("packages").delete().eq("id", id);
+  const { error } = await supabase.from("packages").delete().eq("id", id);
+  if (error) throw new Error(error.message);
 }
 
 export async function getPackagesByOrg(
@@ -136,6 +138,7 @@ export async function getPackagesByOrg(
     .from("packages")
     .select("*")
     .eq("organization_id", orgId)
+    .eq("status", "ACTIVE")
     .order("created_dt", { ascending: false });
   return (data ?? []).map((r) => mapRow<Package>(r));
 }

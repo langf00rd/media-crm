@@ -83,7 +83,7 @@ export default function RequestDetailPage() {
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <Badge variant={request.status === "completed" ? "default" : "secondary"}>
-            {request.status}
+            {request.status.toUpperCase()}
           </Badge>
           {request.terms_accepted && <Badge>Accepted terms</Badge>}
         </div>

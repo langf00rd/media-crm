@@ -39,6 +39,7 @@ export interface Package {
   contract_id?: string;
   contract_fields?: Record<string, string>;
   currency: string;
+  status: string;
   created_dt: string;
   updated_dt: string;
 }

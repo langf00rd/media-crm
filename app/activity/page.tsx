@@ -72,7 +72,7 @@ function RequestsContent() {
             <Item key={r.id} className="shadow-xs bg-white cursor-pointer" onClick={() => router.push(`/activity/${r.id}`)}>
               <ItemContent>
                 <ItemTitle>{`${r.first_name} ${r.last_name}`}</ItemTitle>
-                <ItemDescription>{r.packages?.name} &middot; {r.status}</ItemDescription>
+                <ItemDescription>{r.packages?.name} &middot; {r.status.toUpperCase()}</ItemDescription>
               </ItemContent>
               <ItemActions>
                 {r.terms_accepted && <Badge>Accepted terms</Badge>}
