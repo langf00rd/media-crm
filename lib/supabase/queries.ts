@@ -120,7 +120,7 @@ export async function createPackage(
 
 export async function updatePackage(
   id: string,
-  updates: Partial<Pick<Package, "name" | "description" | "price" | "deposit_percentage" | "features" | "contract_id" | "currency">>,
+  updates: Partial<Pick<Package, "name" | "description" | "price" | "deposit_percentage" | "features" | "contract_id" | "currency" | "contract_fields">>,
 ): Promise<void> {
   await supabase.from("packages").update(updates).eq("id", id);
 }
@@ -198,7 +198,7 @@ export async function updateRequestStatus(
 }
 
 export async function createRequest(
-  input: Pick<Request, "first_name" | "last_name" | "package_id" | "organization_id" | "terms_accepted">,
+  input: Pick<Request, "first_name" | "last_name" | "package_id" | "organization_id" | "terms_accepted"> & { contract_data?: Record<string, string> },
 ): Promise<Request | null> {
   const { data } = await supabase
     .from("requests")

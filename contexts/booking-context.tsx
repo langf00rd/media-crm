@@ -66,8 +66,16 @@ export function BookingProvider({
       setContract(found);
       if (found) {
         const initial: FormData = {};
-        Object.keys(found.fields).forEach((key) => {
-          initial[key] = "";
+        found.fields.external.forEach((key) => {
+          if (key === "date") {
+            initial[key] = new Date().toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+          } else {
+            initial[key] = "";
+          }
         });
         setFormData(initial);
       } else {
@@ -98,6 +106,7 @@ export function BookingProvider({
       package_id: selectedPackage.id,
       organization_id: organizationId,
       terms_accepted: true,
+      contract_data: formData,
     });
 
     setStep("payment");

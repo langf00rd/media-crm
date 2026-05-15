@@ -1,25 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
-import { ArrowLeft, CheckCircle2, Check } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Check, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getPackage, getRequest, updateRequestStatus } from "@/lib/supabase/queries";
-import type { Package, Request } from "@/lib/types";
-import { currencySymbol } from "@/lib/utils";
+import { getContract, getPackage, getRequest, updateRequestStatus } from "@/lib/supabase/queries";
+import type { Contract, Package, Request } from "@/lib/types";
+import { currencySymbol, downloadElementHtml } from "@/lib/utils";
+import ReactMarkdown from "react-markdown";
 
 export default function RequestDetailPage() {
   const params = useParams<{ id: string }>();
   const [request, setRequest] = useState<Request | null>(null);
   const [pkg, setPkg] = useState<Package | null>(null);
+  const [contract, setContract] = useState<Contract | null>(null);
   const [completed, setCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const downloadRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    getRequest(params.id).then((r) => {
+    getRequest(params.id).then(async (r) => {
       setRequest(r);
       if (r) {
-        getPackage(r.package_id).then(setPkg);
+        const p = await getPackage(r.package_id);
+        setPkg(p);
+        if (p?.contract_id) {
+          const c = await getContract(p.contract_id);
+          setContract(c);
+        }
       }
     }).finally(() => setLoading(false));
   }, [params.id]);
@@ -27,6 +35,31 @@ export default function RequestDetailPage() {
   const handleMarkComplete = async () => {
     await updateRequestStatus(params.id, "completed");
     setCompleted(true);
+  };
+
+  const handleDownload = () => {
+    if (!downloadRef.current || !contract || !pkg || !request) return;
+    const user = pkg.contract_fields?.full_name || "";
+    const client = [request.first_name, request.last_name].filter(Boolean).join(" ");
+    const title = [contract.title, user, client].filter(Boolean).join(" ");
+    downloadElementHtml(downloadRef.current, title);
+  };
+
+  const renderedContent = () => {
+    if (!contract || !pkg || !request) return "";
+    const contractData = request.contract_data || {};
+    const replacements = [
+      ...Object.entries(pkg.contract_fields || {}),
+      ["first_name", request.first_name],
+      ["last_name", request.last_name],
+      ...Object.entries(contractData).filter(([k]) => k !== "first_name" && k !== "last_name"),
+    ];
+    return replacements.reduce((acc, [key, value]) => {
+      if (value) {
+        return acc.replace(new RegExp(`\\{\\{${String(key)}\\}\\}`, "g"), value);
+      }
+      return acc;
+    }, contract.content);
   };
 
   if (loading) return <div className="p-6">Loading...</div>;
@@ -48,8 +81,12 @@ export default function RequestDetailPage() {
         <div className="grid grid-cols-2 gap-4">
           <InfoItem label="First Name" value={request.first_name} />
           <InfoItem label="Last Name" value={request.last_name} />
+          <InfoItem label="Date Signed" value={new Date(request.created_dt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })} />
           <InfoItem label="Terms Accepted" value={request.terms_accepted ? "Yes" : "No"} />
-          <InfoItem label="Signature" value={request.signature || "Pending"} />
         </div>
 
         {pkg && (
@@ -78,14 +115,23 @@ export default function RequestDetailPage() {
           </>
         )}
 
-        <div className="border-t border-gray-200 pt-6">
-          <h2 className="text-xl font-bold text-foreground mb-4">Contract</h2>
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-input">
-            <span className="text-foreground font-medium">Contract Signed</span>
-            <span className={request.terms_accepted ? "text-success" : "text-warning"}>
-              {request.terms_accepted ? "✓ Signed" : "Pending"}
-            </span>
+        {contract && (
+          <div className="border-t border-gray-200 pt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-foreground">Contract</h2>
+              <Button variant="outline" size="sm" onClick={handleDownload}>
+                <Download size={16} />
+                Download / Print
+              </Button>
+            </div>
+            <div className="prose prose-sm p-3 md:p-5 rounded-md border bg-background max-w-none">
+              <ReactMarkdown>{renderedContent()}</ReactMarkdown>
+            </div>
           </div>
+        )}
+
+        <div ref={downloadRef} className="hidden">
+          {contract && <ReactMarkdown>{renderedContent()}</ReactMarkdown>}
         </div>
 
         {request.status !== "completed" && !completed && (

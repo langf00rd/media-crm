@@ -2,305 +2,61 @@ import type { Contract, Organization, Package, Request } from "./types";
 
 export type { Contract, Organization, Package, Request };
 
-export const mockOrganization: Organization = {
-  id: "1",
-  name: "Sarah Captures",
-  logo: null,
-  category: "Photography",
-  phone: "+233541234567",
-  email: "sarah@captures.com",
-  slug: "sarah-captures",
-  created_dt: "2024-01-01T00:00:00Z",
-  updated_dt: "2024-01-01T00:00:00Z",
-};
-
-export const mockPackages: Package[] = [
-  {
-    id: "pkg-001",
-    name: "Premium Wedding",
-    description: "Full-day coverage with album and prints",
-    price: 2500,
-    deposit_percentage: 25,
-    features: [
-      "8 hours coverage",
-      "500+ photos",
-      "Digital album",
-      "Print package",
-    ],
-    currency: "GHS",
-    contract_id: "contract-001",
-    created_dt: "2024-01-01T00:00:00Z",
-    updated_dt: "2024-01-01T00:00:00Z",
-  },
-  {
-    id: "pkg-002",
-    name: "Standard Corporate",
-    description: "Half-day event coverage",
-    price: 1200,
-    deposit_percentage: 25,
-    features: ["4 hours coverage", "200+ photos", "Digital delivery"],
-    currency: "GHS",
-    contract_id: "contract-002",
-    created_dt: "2024-01-01T00:00:00Z",
-    updated_dt: "2024-01-01T00:00:00Z",
-  },
-  {
-    id: "pkg-003",
-    name: "Engagement Package",
-    description: "A beautiful engagement shoot",
-    price: 800,
-    deposit_percentage: 25,
-    features: ["2 hours coverage", "100+ photos", "Online gallery"],
-    currency: "GHS",
-    created_dt: "2024-01-01T00:00:00Z",
-    updated_dt: "2024-01-01T00:00:00Z",
-  },
-  {
-    id: "pkg-004",
-    name: "Standard Product",
-    description: "Product photography for small businesses",
-    price: 400,
-    deposit_percentage: 25,
-    features: ["1 hour coverage", "20 edited photos", "Usage rights"],
-    currency: "GHS",
-    created_dt: "2024-01-01T00:00:00Z",
-    updated_dt: "2024-01-01T00:00:00Z",
-  },
-];
-
 export const mockContracts: Contract[] = [
   {
-    id: "contract-001",
+    id: "service-agreement",
     title: "Service Agreement",
     description:
-      "A comprehensive agreement defining scope, deliverables, timelines, and payment obligations.",
-    content: `
-# Service Agreement
-
-This Service Agreement ("Agreement") is entered into by and between the **Service Provider** and the **Client**.
-
-## 1. Scope of Services
-The Service Provider agrees to deliver services as defined in an attached scope of work (SOW).
-
-## 2. Deliverables
-Deliverables, formats, and acceptance criteria shall be agreed upon before work begins.
-
-## 3. Payment Terms
-- Fees shall be agreed in **GHS, NGN, USD, or other mutually agreed currency**.
-- A deposit of **30%–70%** may be required before work begins.
-- Final payment is due upon delivery or milestone completion.
-
-## 4. Client Responsibilities
-The Client agrees to provide accurate requirements and timely feedback.
-
-## 5. Timeline
-Project timelines depend on Client responsiveness.
-
-## 6. Revisions & Scope Creep
-A limited number of revisions may be included.
-
-## 7. Termination
-Either party may terminate this Agreement with written notice.
-
-## 8. Liability
-The Service Provider shall not be liable for indirect or consequential damages.
-
-## 9. Dispute Resolution
-Disputes shall first be resolved through negotiation.
-
----
-
-**Client First Name:** {{first_name}}
-**Client Last Name:** {{last_name}}
-**Signature:** {{signature}}
-`,
+      "A lean general-purpose service agreement for one-time or project-based services between a service provider and a client.",
+    content:
+      '# SERVICE AGREEMENT\n\nThis Service Agreement ("Agreement") is entered into between {{full_name}} ("Service Provider") and {{first_name}} {{last_name}} ("Client").\n\n## 1. Services\nThe Service Provider agrees to provide the following services:\n\n{{service_description}}\n\n## 2. Payment\nThe Client agrees to pay a total amount of {{fee}} for the services described in this Agreement.\n\nA deposit of {{deposit_amount}} is required before work begins. Work will not commence until the deposit is received.\n\n## 3. Client Responsibilities\nThe Client agrees to provide all necessary information, materials, and cooperation required for the Service Provider to perform the services. Delays caused by the Client may affect execution of the services.\n\n## 4. Cancellation\nIf the Client cancels after work has started, the deposit is non-refundable. The Client remains liable for payment of any work already completed up to the cancellation date.\n\n## 5. Ownership\nFull ownership of final deliverables transfers to the Client only after full payment has been received.\n\nThe Service Provider retains the right to display the work in portfolios or promotional materials unless otherwise agreed in writing.\n\n## 6. Confidentiality\nBoth parties agree not to disclose confidential information shared during the course of this Agreement to any third party without prior written consent.\n\n## 7. Liability\nThe Service Provider shall not be liable for any indirect, incidental, or consequential damages arising from this Agreement or the services provided.\n\n## 8. Governing Law\nThis Agreement shall be governed by the laws of the Republic of Ghana.\n\n## 9. Acceptance\nBy signing below, both parties agree to be bound by the terms of this Agreement.\n\n---\n\nSERVICE PROVIDER\n\nName: {{full_name}}\n\n---\n\nCLIENT\n\nName: {{first_name}} {{last_name}}\n\nDate: {{date}}',
+    created_dt: "2026-05-15T00:00:00Z",
+    updated_dt: "2026-05-15T00:00:00Z",
     fields: {
-      last_name: "string",
-      first_name: "string",
-      signature: "string",
+      internal: ["full_name", "service_description", "fee", "deposit_amount"],
+      external: ["first_name", "last_name"],
     },
-    created_dt: "2024-01-01T00:00:00Z",
-    updated_dt: "2024-01-01T00:00:00Z",
   },
   {
-    id: "contract-002",
-    title: "Independent Contractor Agreement",
-    description:
-      "Defines the relationship between a business and a contractor, clarifying non-employment status.",
-    content: `
-# Independent Contractor Agreement
-
-This Agreement is entered into between the **Company** and the **Contractor**.
-
-## 1. Relationship
-The Contractor is an independent entity and not an employee.
-
-## 2. Services
-The Contractor agrees to perform services as outlined in a separate scope.
-
-## 3. Compensation
-- Payment may be fixed, hourly, or milestone-based.
-
-## 4. Taxes & Compliance
-The Contractor is solely responsible for personal income taxes.
-
-## 5. Tools & Equipment
-The Contractor shall provide their own tools and equipment.
-
-## 6. Confidentiality
-The Contractor agrees to maintain confidentiality of all Company information.
-
-## 7. Termination
-Either party may terminate with notice.
-
-## 8. Liability
-The Contractor assumes responsibility for the quality of their work.
-
-## 9. Dispute Resolution
-Disputes shall be resolved through negotiation, mediation, or arbitration.
-
----
-
-**Client First Name:** {{first_name}}
-**Client Last Name:** {{last_name}}
-**Signature:** {{signature}}
-`,
-    fields: {
-      last_name: "string",
-      first_name: "string",
-      signature: "string",
-    },
-    created_dt: "2024-01-01T00:00:00Z",
-    updated_dt: "2024-01-01T00:00:00Z",
-  },
-  {
-    id: "contract-003",
+    id: "retainer-agreement",
     title: "Retainer Agreement",
     description:
-      "An ongoing service agreement with recurring payments for continued access to services.",
-    content: `
-# Retainer Agreement
-
-This Retainer Agreement establishes an ongoing working relationship between the **Service Provider** and the **Client**.
-
-## 1. Retainer Fee
-The Client agrees to pay a recurring fee for access to services.
-
-## 2. Scope of Work
-The retainer covers a predefined scope or number of service hours.
-
-## 3. Priority Access
-Retainer clients receive prioritized service delivery.
-
-## 4. Payment Terms
-Payments are due in advance of each billing cycle.
-
----
-
-**Client First Name:** {{first_name}}
-**Client Last Name:** {{last_name}}
-**Signature:** {{signature}}
-`,
+      "A lean agreement for ongoing monthly service relationships between a service provider and a client.",
+    content:
+      '# RETAINER AGREEMENT\n\nThis Retainer Agreement ("Agreement") is entered into between {{full_name}} ("Service Provider") and {{first_name}} {{last_name}} ("Client").\n\n## 1. Services\nThe Service Provider agrees to provide ongoing services as described below:\n\n{{service_description}}\n\n## 2. Retainer Fee\nThe Client agrees to pay a recurring monthly retainer fee of {{monthly_fee}}.\n\nPayment is due at the start of each billing period. Services may be paused if payment is not received.\n\n## 3. Scope Boundaries\nThe services included under this retainer are limited to the agreed scope above. Any work outside this scope will be treated as additional work and may require separate agreement or additional charges.\n\n## 4. Client Responsibilities\nThe Client agrees to provide timely feedback, materials, and approvals required for service delivery. Delays from the Client may affect ongoing service performance.\n\n## 5. Termination\nEither party may terminate this Agreement by providing written notice.\n\nIf the Client terminates the Agreement mid-cycle, no refund is required for the current billing period.\n\n## 6. Ownership\nAny deliverables created during the retainer period transfer to the Client only after full payment has been received.\n\nThe Service Provider may use non-confidential work for portfolio or promotional purposes unless otherwise agreed.\n\n## 7. Confidentiality\nBoth parties agree to keep confidential information shared during this Agreement private and not disclose it to third parties without consent.\n\n## 8. Liability\nThe Service Provider is not liable for indirect, incidental, or consequential damages arising from services provided under this Agreement.\n\n## 9. Governing Law\nThis Agreement shall be governed by the laws of the Republic of Ghana.\n\n## 10. Acceptance\nBy signing below, both parties agree to be bound by the terms of this Agreement.\n\n---\n\nSERVICE PROVIDER\n\nName: {{full_name}}\n\n---\n\nCLIENT\n\nName: {{first_name}} {{last_name}}\n\nDate: {{date}}',
+    created_dt: "2026-05-15T00:00:00Z",
+    updated_dt: "2026-05-15T00:00:00Z",
     fields: {
-      last_name: "string",
-      first_name: "string",
-      signature: "string",
+      internal: ["full_name", "service_description", "monthly_fee"],
+      external: ["first_name", "last_name"],
     },
-    created_dt: "2024-01-01T00:00:00Z",
-    updated_dt: "2024-01-01T00:00:00Z",
   },
   {
-    id: "contract-004",
+    id: "independent-contractor-agreement",
+    title: "Independent Contractor Agreement",
+    description:
+      "A lean agreement defining an independent contractor relationship for freelance or outsourced services, clarifying non-employment status and ownership terms.",
+    content:
+      '# INDEPENDENT CONTRACTOR AGREEMENT\n\nThis Independent Contractor Agreement ("Agreement") is entered into between {{full_name}} ("Contractor") and {{first_name}} {{last_name}} ("Client").\n\n## 1. Services\nThe Contractor agrees to provide the following services:\n\n{{service_description}}\n\n## 2. Compensation\nThe Client agrees to pay the Contractor a fee of {{fee}} for the services described in this Agreement.\n\nPayment terms and structure are agreed separately between both parties.\n\n## 3. Independent Relationship\nThe Contractor is engaged as an independent contractor and not as an employee, partner, or agent of the Client.\n\nNothing in this Agreement creates an employment relationship. The Contractor is responsible for their own taxes, insurance, and operational costs.\n\n## 4. Control of Work\nThe Contractor retains control over how the services are performed, provided that agreed outcomes and requirements are met.\n\n## 5. Ownership\nUpon full payment, ownership of final deliverables transfers to the Client unless otherwise agreed.\n\nThe Contractor retains the right to use non-confidential work for portfolio or promotional purposes.\n\n## 6. Confidentiality\nBoth parties agree not to disclose confidential information obtained during the course of this Agreement to any third party without prior written consent.\n\n## 7. Termination\nEither party may terminate this Agreement with written notice. The Client must pay for all work completed up to the termination date.\n\n## 8. Liability\nThe Contractor shall not be liable for indirect, incidental, or consequential damages arising from this Agreement.\n\n## 9. Governing Law\nThis Agreement shall be governed by the laws of the Republic of Ghana.\n\n## 10. Acceptance\nBy signing below, both parties agree to the terms of this Agreement.\n\n---\n\nCONTRACTOR\n\nName: {{full_name}}\n\n---\n\nCLIENT\n\nName: {{first_name}} {{last_name}}\n\nDate: {{date}}',
+    created_dt: "2026-05-15T00:00:00Z",
+    updated_dt: "2026-05-15T00:00:00Z",
+    fields: {
+      internal: ["full_name", "service_description", "fee"],
+      external: ["first_name", "last_name"],
+    },
+  },
+  {
+    id: "nda",
     title: "Non-Disclosure Agreement (NDA)",
     description:
-      "A confidentiality agreement protecting sensitive business information shared between parties.",
-    content: `
-# Non-Disclosure Agreement (NDA)
-
-This Agreement is made between the **Disclosing Party** and the **Receiving Party**.
-
-## 1. Definition of Confidential Information
-Confidential Information includes all non-public, proprietary, or sensitive information.
-
-## 2. Obligations
-The Receiving Party agrees to not disclose confidential information to third parties.
-
-## 3. Exclusions
-Confidential Information does not include information already in the public domain.
-
-## 4. Duration
-This Agreement remains in effect for 2–5 years or as agreed.
-
-## 5. Breach
-Any breach may result in legal action.
-
----
-
-**Client First Name:** {{first_name}}
-**Client Last Name:** {{last_name}}
-**Signature:** {{signature}}
-`,
+      "A lean confidentiality agreement to protect sensitive information shared between parties during discussions or service engagement.",
+    content:
+      '# NON-DISCLOSURE AGREEMENT (NDA)\n\nThis Non-Disclosure Agreement ("Agreement") is entered into between {{full_name}} ("Disclosing Party") and {{first_name}} {{last_name}} ("Receiving Party").\n\n## 1. Purpose\nThe parties intend to share confidential information for the purpose of discussing or executing potential or ongoing services.\n\n## 2. Confidential Information\n"Confidential Information" includes any non-public information disclosed during the course of engagement, including business, technical, financial, or operational information.\n\n## 3. Obligations\nThe Receiving Party agrees to:\n- Keep all Confidential Information strictly confidential\n- Not disclose it to any third party without prior written consent\n- Use the information only for the intended purpose of the Agreement\n\n## 4. Exclusions\nConfidential Information does not include information that:\n- Is publicly available without breach of this Agreement\n- Was already known to the Receiving Party before disclosure\n- Is independently developed without use of Confidential Information\n\n## 5. Duration\nThis Agreement remains in effect for a period of {{duration}} from the date of signing, unless otherwise agreed in writing.\n\n## 6. Return of Information\nUpon request, the Receiving Party agrees to return or destroy any confidential materials received.\n\n## 7. No License\nNothing in this Agreement grants any ownership or license rights to the Receiving Party over the Confidential Information.\n\n## 8. Liability\nAny breach of this Agreement may result in legal action and claims for damages.\n\n## 9. Governing Law\nThis Agreement shall be governed by the laws of the Republic of Ghana.\n\n## 10. Acceptance\nBy signing below, both parties agree to be bound by the terms of this Agreement.\n\n---\n\nDISCLOSING PARTY\n\nName: {{full_name}}\n\n---\n\nRECEIVING PARTY\n\nName: {{first_name}} {{last_name}}\n\nDate: {{date}}',
+    created_dt: "2026-05-15T00:00:00Z",
+    updated_dt: "2026-05-15T00:00:00Z",
     fields: {
-      last_name: "string",
-      first_name: "string",
-      signature: "string",
+      internal: ["full_name", "duration"],
+      external: ["first_name", "last_name"],
     },
-    created_dt: "2024-01-01T00:00:00Z",
-    updated_dt: "2024-01-01T00:00:00Z",
-  },
-];
-
-export const mockRequests: Request[] = [
-  {
-    id: "req-001",
-    first_name: "Ama",
-    last_name: "Owusu",
-    signature: "",
-    package_id: "pkg-001",
-    organization_id: "1",
-    terms_accepted: true,
-    status: "in-progress",
-    completed_dt: "",
-    created_dt: "2024-05-01T00:00:00Z",
-    updated_dt: "2024-05-01T00:00:00Z",
-  },
-  {
-    id: "req-002",
-    first_name: "Kwame",
-    last_name: "Asante",
-    signature: "",
-    package_id: "pkg-002",
-    organization_id: "1",
-    terms_accepted: true,
-    status: "completed",
-    completed_dt: "2024-05-21T00:00:00Z",
-    created_dt: "2024-04-15T00:00:00Z",
-    updated_dt: "2024-05-21T00:00:00Z",
-  },
-  {
-    id: "req-003",
-    first_name: "Abena",
-    last_name: "Boateng",
-    signature: "",
-    package_id: "pkg-003",
-    organization_id: "1",
-    terms_accepted: false,
-    status: "pending",
-    completed_dt: "",
-    created_dt: "2024-06-01T00:00:00Z",
-    updated_dt: "2024-06-01T00:00:00Z",
-  },
-  {
-    id: "req-004",
-    first_name: "Kofi",
-    last_name: "Mensah",
-    signature: "",
-    package_id: "pkg-004",
-    organization_id: "1",
-    terms_accepted: true,
-    status: "cancelled",
-    completed_dt: "",
-    created_dt: "2024-04-20T00:00:00Z",
-    updated_dt: "2024-05-10T00:00:00Z",
   },
 ];

@@ -26,6 +26,7 @@ export interface Request {
   completed_dt: string;
   created_dt: string;
   updated_dt: string;
+  contract_data: Record<string, string>;
 }
 
 export interface Package {
@@ -36,6 +37,7 @@ export interface Package {
   deposit_percentage: number;
   features: string[];
   contract_id?: string;
+  contract_fields?: Record<string, string>;
   currency: string;
   created_dt: string;
   updated_dt: string;
@@ -57,5 +59,8 @@ export interface Contract {
   content: string;
   created_dt: string;
   updated_dt: string;
-  fields: Record<string, string>;
+  fields: {
+    internal: string[];
+    external: string[];
+  };
 }

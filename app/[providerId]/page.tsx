@@ -20,11 +20,11 @@ import {
   getPackagesByOrg,
 } from "@/lib/supabase/queries";
 import type { Contract, Package } from "@/lib/types";
-import { currencySymbol } from "@/lib/utils";
-import { Check, CreditCard, PlusIcon } from "lucide-react";
+import { currencySymbol, downloadElementHtml } from "@/lib/utils";
+import { Check, CreditCard, Download, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 function StepIndicator() {
@@ -114,15 +114,15 @@ function ContractView() {
 
   if (!selectedPackage || !contract) return null;
 
-  const fields = Object.keys(contract.fields).filter(
-    (f) => f !== "signature",
-  ) as (keyof typeof formData)[];
-  const allFilled = fields.every((f) => formData[f]?.trim());
+  const clientFields = contract.fields.external as (keyof typeof formData)[];
+  const allFilled = clientFields.every((f) => formData[f]?.trim());
   const [termsAccepted, setTermsAccepted] = useState(false);
   const canProceed = allFilled && termsAccepted;
 
-  const renderedContent = fields.reduce((acc, key) => {
-    const value = formData[key];
+  const renderedContent = [
+    ...Object.entries(selectedPackage.contract_fields || {}),
+    ...clientFields.map((f) => [f, formData[f] || ""]),
+  ].reduce((acc, [key, value]) => {
     if (value) {
       return acc.replace(new RegExp(`\\{\\{${String(key)}\\}\\}`, "g"), value);
     }
@@ -135,12 +135,12 @@ function ContractView() {
         <ReactMarkdown>{renderedContent}</ReactMarkdown>
       </div>
 
-      {fields.length > 0 && (
+      {clientFields.length > 0 && (
         <form className="space-y-4 mx-auto py-4 max-w-md">
           <div className="grid md:grid-cols-2 gap-5">
             {["first_name", "last_name"].map((key) => {
               const field = key as keyof typeof formData;
-              if (!fields.includes(field)) return null;
+              if (!clientFields.includes(field)) return null;
               return (
                 <div key={key} className="space-y-2 w-full">
                   <Label htmlFor={key}>
@@ -163,8 +163,8 @@ function ContractView() {
               );
             })}
           </div>
-          {fields
-            .filter((f) => f !== "first_name" && f !== "last_name")
+          {clientFields
+            .filter((f) => f !== "first_name" && f !== "last_name" && f !== "date")
             .map((field) => (
               <div key={String(field)} className="space-y-2">
                 <Label htmlFor={String(field)}>
@@ -260,19 +260,45 @@ function PaymentView() {
 }
 
 function SuccessView() {
-  const { selectedPackage, formData, reset } = useBooking();
+  const { selectedPackage, contract, formData, reset } = useBooking();
+  const downloadRef = useRef<HTMLDivElement>(null);
+
+  const handleDownload = () => {
+    if (!downloadRef.current || !contract || !selectedPackage) return;
+    const user = selectedPackage.contract_fields?.full_name || "";
+    const client = [formData.first_name, formData.last_name].filter(Boolean).join(" ");
+    const title = [contract.title, user, client].filter(Boolean).join(" ");
+    downloadElementHtml(downloadRef.current, title);
+  };
+
+  const renderedContent = () => {
+    if (!contract || !selectedPackage) return "";
+    const replacements = [
+      ...Object.entries(selectedPackage.contract_fields || {}),
+      ...Object.entries(formData),
+    ];
+    return replacements.reduce((acc, [key, value]) => {
+      if (value) {
+        return acc.replace(new RegExp(`\\{\\{${String(key)}\\}\\}`, "g"), value);
+      }
+      return acc;
+    }, contract.content);
+  };
+
   if (!selectedPackage) return null;
   return (
-    <div className="text-center py-8">
-      <div className="w-16 h-16 bg-green-700 text-white rounded-full flex items-center justify-center mx-auto mb-4">
-        <Check size={32} className="text-success" />
+    <div className="py-8">
+      <div className="text-center">
+        <div className="w-16 h-16 bg-green-700 text-white rounded-full flex items-center justify-center mx-auto mb-4">
+          <Check size={32} className="text-success" />
+        </div>
+        <h1 className="text-2xl font-semibold mb-2">Booking Confirmed!</h1>
+        <p className="text-muted-foreground mb-8">
+          Your booking has been confirmed successfully
+        </p>
       </div>
-      <h1 className="text-2xl font-semibold mb-2">Booking Confirmed!</h1>
-      <p className="text-muted-foreground mb-8">
-        Your booking has been confirmed successfully
-      </p>
 
-      <Card className="text-left">
+      <Card className="text-left mb-6">
         <CardHeader>
           <CardTitle>Booking Summary</CardTitle>
         </CardHeader>
@@ -295,9 +321,30 @@ function SuccessView() {
         </CardContent>
       </Card>
 
-      <Button className="mt-6" onClick={reset}>
-        Book Another Package
-      </Button>
+      {contract && (
+        <div className="text-left space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Signed Contract</h2>
+            <Button variant="outline" size="sm" onClick={handleDownload}>
+              <Download size={16} />
+              Download / Print
+            </Button>
+          </div>
+          <div className="prose prose-sm p-3 md:p-5 rounded-md border bg-background max-w-none">
+            <ReactMarkdown>{renderedContent()}</ReactMarkdown>
+          </div>
+        </div>
+      )}
+
+      <div ref={downloadRef} className="hidden">
+        {contract && <ReactMarkdown>{renderedContent()}</ReactMarkdown>}
+      </div>
+
+      <div className="text-center">
+        <Button className="mt-6" onClick={reset}>
+          Book Another Package
+        </Button>
+      </div>
     </div>
   );
 }

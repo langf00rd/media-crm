@@ -12,7 +12,7 @@ import { Button } from "./ui/button";
 
 export default function ContractItem(props: { contract: Contract }) {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>{props.contract.title}</CardTitle>
         <CardDescription>{props.contract.description}</CardDescription>
@@ -23,7 +23,7 @@ export default function ContractItem(props: { contract: Contract }) {
         </div>
       </CardContent>*/}
       <CardFooter className="gap-4">
-        <Button className="bg-primary/10 text-primary">
+        <Button className="bg-primary/10 text-primary" disabled>
           <DownloadIcon />
           Download PDF
         </Button>

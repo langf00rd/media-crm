@@ -38,7 +38,7 @@ export default function ContractsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {contracts.map((a) => (
-            <Link key={a.id} href={`/contracts/${a.id}`}>
+            <Link key={a.id} href={`/contracts/${a.id}`} className="h-full">
               <ContractItem contract={a} />
             </Link>
           ))}
