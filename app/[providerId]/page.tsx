@@ -28,7 +28,7 @@ import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 function StepIndicator() {
-  const { step } = useBooking();
+  const { step, goToStep } = useBooking();
   const stepIndex = BOOKING_STEPS.findIndex((s) => s.step === step);
   return (
     <div className="flex items-center gap-8">
@@ -39,7 +39,8 @@ function StepIndicator() {
               idx <= stepIndex
                 ? "text-primary"
                 : "opacity-70 text-muted-foreground"
-            }`}
+            }${idx < stepIndex ? " cursor-pointer" : ""}`}
+            onClick={() => idx < stepIndex && goToStep(s.step)}
           >
             <div
               className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium shrink-0 ${
@@ -115,9 +116,8 @@ function ContractView() {
   if (!selectedPackage || !contract) return null;
 
   const clientFields = contract.fields.external as (keyof typeof formData)[];
-  const allFilled = clientFields.every((f) => formData[f]?.trim());
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const canProceed = allFilled && termsAccepted;
+  const canProceed = termsAccepted;
 
   const renderedContent = [
     ...Object.entries(selectedPackage.contract_fields || {}),

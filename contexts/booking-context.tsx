@@ -28,6 +28,7 @@ export interface BookingContextValue extends BookingState {
   acceptContract: () => void;
   processPayment: () => void;
   goBack: () => void;
+  goToStep: (step: BookingStep) => void;
   reset: () => void;
   packages: Package[];
   deposit: number;
@@ -143,6 +144,22 @@ export function BookingProvider({
     setStep("packages");
   }, []);
 
+  const goToStep = useCallback(
+    (target: BookingStep) => {
+      const steps = BOOKING_STEPS.map((s) => s.step);
+      const currentIdx = steps.indexOf(step);
+      const targetIdx = steps.indexOf(target);
+      if (targetIdx >= currentIdx) return;
+      if (target === "packages") {
+        setSelectedPackage(null);
+        setContract(null);
+        setFormData({});
+      }
+      setStep(target);
+    },
+    [step],
+  );
+
   return (
     <BookingContext.Provider
       value={{
@@ -158,6 +175,7 @@ export function BookingProvider({
         acceptContract,
         processPayment,
         goBack,
+        goToStep,
         reset,
       }}
     >
